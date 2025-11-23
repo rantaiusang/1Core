@@ -1,3 +1,7 @@
+// =============================================
+// PI BROWSER OPTIMIZED VERSION
+// =============================================
+
 // Pi Network Configuration
 const PI_APP_ID = 'pi_trace_app'; // Ganti dengan App ID dari Pi Developer Portal
 
@@ -7,43 +11,116 @@ let currentUser = null;
 let userProducts = JSON.parse(localStorage.getItem('pi_trace_products')) || [];
 let allProducts = JSON.parse(localStorage.getItem('pi_trace_all_products')) || [];
 
-// Initialize Pi SDK
+// Pi Browser Detection
+function detectPiBrowser() {
+    const isPiBrowser = navigator.userAgent.includes('PiBrowser') || 
+                       window.location.protocol === 'pi:' ||
+                       /PiBrowser/i.test(navigator.userAgent);
+    
+    if (isPiBrowser) {
+        document.documentElement.classList.add('pi-browser');
+        document.body.classList.add('pi-browser');
+        addDebugLog('🌐 Pi Browser detected - Enabling Pi-specific features');
+    }
+    
+    return isPiBrowser;
+}
+
+// Load Pi SDK dynamically
+function loadPiSDK() {
+    return new Promise((resolve, reject) => {
+        if (window.Pi) {
+            resolve();
+            return;
+        }
+        
+        const script = document.createElement('script');
+        script.src = 'https://sdk.minepi.com/pi-sdk.js';
+        script.async = true;
+        script.defer = true;
+        
+        script.onload = () => {
+            addDebugLog('✅ Pi SDK loaded successfully');
+            resolve();
+        };
+        
+        script.onerror = () => {
+            addDebugLog('❌ Pi SDK failed to load');
+            reject(new Error('Failed to load Pi SDK'));
+        };
+        
+        document.head.appendChild(script);
+    });
+}
+
+// Initialize Pi SDK dengan Pi Browser support
 async function initializePiSDK() {
     try {
-        addDebugLog('Initializing Pi SDK...');
+        addDebugLog('🚀 Initializing Pi SDK...');
+        
+        const isPiBrowser = detectPiBrowser();
         
         // Check if Pi SDK is available
         if (typeof window.Pi === 'undefined') {
-            addDebugLog('Pi SDK not found in window object');
-            return false;
+            if (isPiBrowser) {
+                addDebugLog('Pi SDK not found, loading dynamically...');
+                await loadPiSDK();
+            } else {
+                addDebugLog('Pi SDK not available in regular browser');
+                return false;
+            }
         }
         
         pi = window.Pi;
         
-        // Initialize Pi SDK
-        pi.init(PI_APP_ID, (initResult) => {
-            addDebugLog('Pi SDK initialized: ' + JSON.stringify(initResult));
-            
-            if (initResult && pi.isAuthenticated()) {
-                addDebugLog('User already authenticated with Pi Network');
-                // User is already logged in
-                handlePiAuthSuccess(initResult);
-            }
+        if (!pi) {
+            throw new Error('Pi SDK not available');
+        }
+        
+        // Initialize Pi SDK dengan error handling
+        await new Promise((resolve, reject) => {
+            pi.init(PI_APP_ID, (initResult) => {
+                if (initResult) {
+                    addDebugLog('✅ Pi SDK initialized: ' + JSON.stringify(initResult));
+                    
+                    if (pi.isAuthenticated()) {
+                        addDebugLog('🔑 User already authenticated with Pi Network');
+                        handlePiAuthSuccess(initResult);
+                    }
+                    
+                    resolve(initResult);
+                } else {
+                    reject(new Error('Pi SDK initialization failed'));
+                }
+            });
         });
         
         return true;
     } catch (error) {
-        addDebugLog('Pi SDK initialization failed: ' + error.message);
+        addDebugLog('❌ Pi SDK initialization failed: ' + error.message);
         console.error('Pi SDK Error:', error);
         return false;
     }
 }
 
-// Pi Login Function
+// Enhanced Pi Login Function untuk Pi Browser
 async function loginWithPi() {
     try {
-        addDebugLog('Starting Pi login process...');
-        showStatus('🔐 Connecting to Pi Network...', 'info');
+        addDebugLog('🔄 Starting Pi login process...');
+        
+        const isPiBrowser = detectPiBrowser();
+        
+        if (!isPiBrowser) {
+            showStatus('❌ Please open in Pi Browser to login with Pi Wallet', 'error');
+            // Fallback lebih cepat untuk non-Pi Browser
+            setTimeout(() => {
+                showStatus('🔄 Switching to demo mode...', 'warning');
+                mockLogin();
+            }, 1500);
+            return;
+        }
+        
+        showStatus('<div class="pi-loading"></div> Connecting to Pi Network...', 'info');
         
         if (!pi) {
             const sdkLoaded = await initializePiSDK();
@@ -57,19 +134,31 @@ async function loginWithPi() {
         
         // Authenticate with Pi Network
         const authResult = await pi.authenticate(scopes, onIncompletePaymentFound);
-        addDebugLog('Pi authentication successful');
         
+        if (!authResult) {
+            throw new Error('No authentication response received');
+        }
+        
+        addDebugLog('✅ Pi authentication successful');
         await handlePiAuthSuccess(authResult);
         
     } catch (error) {
-        addDebugLog('Pi login failed: ' + error.message);
-        showStatus('❌ Pi login failed: ' + error.message, 'error');
-        console.error('Pi Login Error:', error);
+        addDebugLog('❌ Pi login failed: ' + error.message);
         
-        // Fallback to mock login after 3 seconds
+        if (error.message.includes('user cancelled') || error.message.includes('User denied')) {
+            showStatus('❌ Login cancelled by user', 'warning');
+        } else if (error.message.includes('network') || error.message.includes('timeout')) {
+            showStatus('🌐 Network error - Please check your connection', 'error');
+        } else {
+            showStatus('❌ Pi login failed: ' + error.message, 'error');
+        }
+        
+        // Fallback to mock login
         setTimeout(() => {
-            showStatus('🔄 Falling back to demo mode...', 'warning');
-            mockLogin();
+            if (!currentUser) {
+                showStatus('🔄 Falling back to demo mode...', 'warning');
+                mockLogin();
+            }
         }, 3000);
     }
 }
@@ -89,8 +178,8 @@ async function handlePiAuthSuccess(authResult) {
         loginMethod: 'pi'
     };
     
-    addDebugLog('User authenticated: ' + currentUser.username);
-    showStatus('✅ Welcome to PI TRACE, ' + currentUser.username + '!', 'success');
+    addDebugLog('✅ User authenticated: ' + currentUser.username);
+    showStatus('🎉 Welcome to PI TRACE, ' + currentUser.username + '!', 'success');
     
     // Save user data
     localStorage.setItem('pi_trace_user', JSON.stringify(currentUser));
@@ -108,7 +197,7 @@ function mockLogin() {
         loginMethod: 'mock'
     };
     
-    addDebugLog('Mock login: ' + currentUser.username);
+    addDebugLog('🧪 Mock login: ' + currentUser.username);
     showStatus('🧪 Demo mode activated - Use Pi Browser for full features', 'warning');
     
     localStorage.setItem('pi_trace_user', JSON.stringify(currentUser));
@@ -124,7 +213,7 @@ function guestLogin() {
         loginMethod: 'guest'
     };
     
-    addDebugLog('Guest login: ' + currentUser.username);
+    addDebugLog('👤 Guest login: ' + currentUser.username);
     showStatus('👋 Welcome Guest! Some features may be limited.', 'info');
     
     localStorage.setItem('pi_trace_user', JSON.stringify(currentUser));
@@ -160,8 +249,12 @@ function showAppSection() {
 // Logout function
 function logout() {
     if (pi && currentUser && currentUser.loginMethod === 'pi') {
-        pi.logout();
-        addDebugLog('Pi Network logout completed');
+        try {
+            pi.logout();
+            addDebugLog('🔒 Pi Network logout completed');
+        } catch (error) {
+            addDebugLog('⚠️ Pi logout error: ' + error.message);
+        }
     }
     
     currentUser = null;
@@ -174,12 +267,12 @@ function logout() {
     document.getElementById('searchInput').value = '';
     
     showStatus('✅ Logout successful', 'success');
-    addDebugLog('User logged out');
+    addDebugLog('👤 User logged out');
 }
 
 // Product registration modal
 function showProductModal() {
-    addDebugLog('Opening product registration modal');
+    addDebugLog('📝 Opening product registration modal');
     
     // Generate initial preview
     updateProductPreview();
@@ -257,7 +350,7 @@ function getUnitDisplayName(unit) {
 
 // Submit product registration
 function submitProduct() {
-    addDebugLog('Submitting product registration...');
+    addDebugLog('📦 Submitting product registration...');
     
     // Get form values
     const name = document.getElementById('productName').value.trim();
@@ -344,7 +437,7 @@ function submitProduct() {
     
     // Show success message
     showStatus('✅ Product registered successfully!', 'success');
-    addDebugLog(`Product registered: ${name} (${quantity} ${getUnitDisplayName(unit)})`);
+    addDebugLog(`📦 Product registered: ${name} (${quantity} ${getUnitDisplayName(unit)})`);
     
     // Clear form
     document.getElementById('productName').value = '';
@@ -409,7 +502,7 @@ function displayProducts() {
 
 // View product detail
 function viewProductDetail(productId) {
-    addDebugLog(`Viewing product details for ID: ${productId}`);
+    addDebugLog(`🔍 Viewing product details for ID: ${productId}`);
     const product = userProducts.find(p => p.id === productId);
     
     if (!product) {
@@ -522,7 +615,7 @@ function generateSupplyChainTimeline(product) {
 // Search functionality
 function searchProducts() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-    addDebugLog(`Searching for: "${searchTerm}"`);
+    addDebugLog(`🔍 Searching for: "${searchTerm}"`);
     
     if (!searchTerm) {
         // Reset to show all user products
@@ -551,16 +644,16 @@ function searchProducts() {
     }
 }
 
-// QR Code Scanner Function - DIPERBAIKI
+// QR Code Scanner Function
 function openQRScanner() {
-    addDebugLog('Opening QR code scanner');
+    addDebugLog('📷 Opening QR code scanner');
     document.getElementById('qrScannerModal').style.display = 'flex';
     document.getElementById('qrResult').style.display = 'none';
     showStatus('📷 QR Scanner ready - Click "Simulate QR Scan" to test', 'info');
 }
 
 function simulateQRScan() {
-    addDebugLog('Simulating QR code scan');
+    addDebugLog('📷 Simulating QR code scan');
     
     // Simulate scanning a product QR code
     if (userProducts.length > 0) {
@@ -569,7 +662,7 @@ function simulateQRScan() {
         document.getElementById('qrResult').style.display = 'block';
         
         showStatus(`🔍 QR Scan successful! Product: ${randomProduct.name}`, 'success');
-        addDebugLog(`QR scan simulated for product: ${randomProduct.name}`);
+        addDebugLog(`📷 QR scan simulated for product: ${randomProduct.name}`);
         
         // Auto-close after 3 seconds and show product details
         setTimeout(() => {
@@ -581,9 +674,9 @@ function simulateQRScan() {
     }
 }
 
-// Supply Chain Overview - DIPERBAIKI
+// Supply Chain Overview
 function showSupplyChainOverview() {
-    addDebugLog('Opening supply chain overview');
+    addDebugLog('📊 Opening supply chain overview');
     
     // Update statistics
     document.getElementById('totalProducts').textContent = userProducts.length;
@@ -625,9 +718,19 @@ function showSupplyChainOverview() {
     showStatus('📊 Supply chain overview loaded', 'info');
 }
 
-// Create Pi Payment
+// Create Pi Payment dengan Pi Browser support
 async function createPayment() {
     try {
+        const isPiBrowser = detectPiBrowser();
+        
+        if (!isPiBrowser) {
+            showStatus('💳 Demo: Payment simulation (3.14 π)', 'info');
+            setTimeout(() => {
+                showStatus('✅ Demo payment processed successfully!', 'success');
+            }, 2000);
+            return;
+        }
+        
         if (!currentUser || currentUser.loginMethod !== 'pi') {
             showStatus('❌ Please login with Pi Wallet to make payments', 'error');
             return;
@@ -648,56 +751,91 @@ async function createPayment() {
             }
         };
         
-        addDebugLog('Creating Pi payment: ' + JSON.stringify(paymentData));
-        showStatus('💳 Processing payment of 3.14 π...', 'info');
+        addDebugLog('💰 Creating Pi payment: ' + JSON.stringify(paymentData));
+        showStatus('<div class="pi-loading"></div> Processing payment of 3.14 π...', 'info');
         
         const payment = await pi.createPayment(paymentData, {
             onReadyForServerApproval: (paymentId) => {
-                addDebugLog('Payment ready for server approval: ' + paymentId);
+                addDebugLog('✅ Payment ready for server approval: ' + paymentId);
                 showStatus('⏳ Approving payment...', 'info');
             },
             onReadyForServerCompletion: (paymentId, txid) => {
-                addDebugLog('Payment ready for completion: ' + paymentId + ', TX: ' + txid);
+                addDebugLog('🎉 Payment ready for completion: ' + paymentId + ', TX: ' + txid);
                 showStatus('✅ Payment completed! Transaction: ' + txid, 'success');
             },
             onCancel: (paymentId) => {
-                addDebugLog('Payment cancelled: ' + paymentId);
+                addDebugLog('❌ Payment cancelled: ' + paymentId);
                 showStatus('❌ Payment cancelled by user', 'warning');
             },
             onError: (error, paymentId) => {
-                addDebugLog('Payment error: ' + error + ' - ' + paymentId);
+                addDebugLog('💥 Payment error: ' + error + ' - ' + paymentId);
                 showStatus('❌ Payment failed: ' + error, 'error');
             }
         });
         
     } catch (error) {
-        addDebugLog('Payment creation failed: ' + error.message);
+        addDebugLog('💥 Payment creation failed: ' + error.message);
         showStatus('❌ Payment failed: ' + error.message, 'error');
         
-        // Simulate successful payment for demo purposes
-        setTimeout(() => {
-            showStatus('💳 Demo: Payment of 3.14 π processed successfully!', 'success');
-        }, 2000);
+        // Fallback untuk demo purposes
+        if (!detectPiBrowser()) {
+            setTimeout(() => {
+                showStatus('💳 Demo: Payment of 3.14 π processed successfully!', 'success');
+            }, 2000);
+        }
     }
 }
 
 // Handle incomplete payments
 function onIncompletePaymentFound(payment) {
-    addDebugLog('Incomplete payment found: ' + JSON.stringify(payment));
+    addDebugLog('⚠️ Incomplete payment found: ' + JSON.stringify(payment));
     showStatus('⚠️ Found incomplete payment - Please check your transactions', 'warning');
 }
 
-// Debug logging
+// Enhanced debug logging untuk Pi Browser
 function addDebugLog(message) {
     const debugPanel = document.getElementById('debugPanel');
     if (debugPanel) {
+        const now = new Date();
+        const timestamp = now.toLocaleTimeString() + '.' + now.getMilliseconds().toString().padStart(3, '0');
+        
         const logItem = document.createElement('div');
         logItem.className = 'debug-item';
-        logItem.textContent = '[' + new Date().toLocaleTimeString() + '] ' + message;
+        
+        // Add emoji based on message type
+        let emoji = '💬';
+        if (message.includes('✅') || message.includes('success')) emoji = '✅';
+        if (message.includes('❌') || message.includes('error')) emoji = '❌';
+        if (message.includes('⚠️') || message.includes('warning')) emoji = '⚠️';
+        if (message.includes('🚀')) emoji = '🚀';
+        if (message.includes('🔑')) emoji = '🔑';
+        if (message.includes('💰')) emoji = '💰';
+        if (message.includes('🌐')) emoji = '🌐';
+        if (message.includes('📝')) emoji = '📝';
+        if (message.includes('📦')) emoji = '📦';
+        if (message.includes('🔍')) emoji = '🔍';
+        if (message.includes('📷')) emoji = '📷';
+        if (message.includes('📊')) emoji = '📊';
+        if (message.includes('🧪')) emoji = '🧪';
+        if (message.includes('👤')) emoji = '👤';
+        if (message.includes('🔒')) emoji = '🔒';
+        if (message.includes('🎉')) emoji = '🎉';
+        if (message.includes('💥')) emoji = '💥';
+        
+        logItem.innerHTML = `<span style="opacity:0.7">[${timestamp}]</span> ${emoji} ${message}`;
+        
+        // Limit debug items untuk performance Pi Browser
+        const maxItems = 20;
+        const items = debugPanel.getElementsByClassName('debug-item');
+        if (items.length >= maxItems) {
+            debugPanel.removeChild(items[0]);
+        }
+        
         debugPanel.appendChild(logItem);
         debugPanel.scrollTop = debugPanel.scrollHeight;
     }
-    console.log('PI TRACE:', message);
+    
+    console.log(`[PI-TRACE] ${message}`);
 }
 
 // Status messages
@@ -726,7 +864,7 @@ function checkExistingLogin() {
     const savedUser = localStorage.getItem('pi_trace_user');
     if (savedUser) {
         currentUser = JSON.parse(savedUser);
-        addDebugLog('Existing user found: ' + currentUser.username);
+        addDebugLog('🔑 Existing user found: ' + currentUser.username);
         
         // Load user's products
         userProducts = JSON.parse(localStorage.getItem('pi_trace_products')) || [];
@@ -737,23 +875,57 @@ function checkExistingLogin() {
     }
 }
 
+// Pi Browser specific setup
+function setupPiBrowserFeatures() {
+    // Add Pi Browser specific event listeners
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') {
+            addDebugLog('📱 App resumed in Pi Browser');
+        }
+    });
+    
+    // Handle Pi Browser specific behaviors
+    if (detectPiBrowser()) {
+        // Optimize for Pi Browser
+        document.body.classList.add('pi-browser-optimized');
+    }
+}
+
 // Initialize application
 document.addEventListener('DOMContentLoaded', function() {
-    addDebugLog('PI TRACE Application starting...');
-    addDebugLog('User Agent: ' + navigator.userAgent);
+    addDebugLog('🚀 PI TRACE Application starting...');
+    addDebugLog('🌐 User Agent: ' + navigator.userAgent);
+    
+    // Setup Pi Browser features
+    setupPiBrowserFeatures();
     
     // Check for existing login
     checkExistingLogin();
     
-    // Initialize Pi SDK
-    initializePiSDK();
+    // Initialize Pi SDK (non-blocking)
+    setTimeout(() => {
+        initializePiSDK();
+    }, 1000);
     
     // Add event listeners
-    document.getElementById('searchInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            searchProducts();
-        }
-    });
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchProducts();
+            }
+        });
+        
+        // Real-time search untuk Pi Browser
+        searchInput.addEventListener('input', function() {
+            clearTimeout(this.searchTimeout);
+            this.searchTimeout = setTimeout(() => {
+                if (this.value.trim()) {
+                    searchProducts();
+                }
+            }, 500);
+        });
+    }
     
     // Close modals when clicking outside
     window.addEventListener('click', function(event) {
@@ -765,6 +937,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    addDebugLog('Application initialized successfully');
+    addDebugLog('✅ Application initialized successfully');
     showStatus('🚀 PI TRACE Ready! Login to start tracking your supply chain.', 'success');
 });
+
+// Export functions for global access (untuk HTML onclick)
+window.loginWithPi = loginWithPi;
+window.mockLogin = mockLogin;
+window.guestLogin = guestLogin;
+window.logout = logout;
+window.showProductModal = showProductModal;
+window.closeModal = closeModal;
+window.submitProduct = submitProduct;
+window.viewProductDetail = viewProductDetail;
+window.searchProducts = searchProducts;
+window.openQRScanner = openQRScanner;
+window.simulateQRScan = simulateQRScan;
+window.showSupplyChainOverview = showSupplyChainOverview;
+window.createPayment = createPayment;
