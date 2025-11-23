@@ -1,17 +1,25 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PI TRACE - Supply Chain Tracking</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- FIXED FONT AWESOME CDN -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
-        <!-- Login Section -->
+
+        <!-- ====================== LOGIN SECTION ====================== -->
         <div id="login-section">
             <div class="glass-card">
+
                 <div class="header">
                     <div class="logo">
                         <i class="fas fa-link"></i>
@@ -19,26 +27,21 @@
                     <h1 class="title">PI TRACE</h1>
                     <p class="subtitle">Blockchain Supply Chain Tracking Solution</p>
                 </div>
-                
-                <h2 style="text-align: center; margin-bottom: 20px;">Welcome to PI TRACE</h2>
-                <p style="text-align: center; color: var(--gray); margin-bottom: 30px;">
-                    Track your products through the entire supply chain using blockchain technology.
-                </p>
-                
+
+                <h2 class="center-text">Welcome to PI TRACE</h2>
+                <p class="center-sub">Track your products through the entire supply chain using blockchain technology.</p>
+
                 <div class="actions">
                     <button class="btn btn-primary" onclick="loginWithPi()">
-                        <i class="fab fa-raspberry-pi"></i>
-                        Login with Pi Wallet
+                        <i class="fab fa-raspberry-pi"></i> Login with Pi Wallet
                     </button>
-                    
+
                     <button class="btn mock-login-btn" onclick="mockLogin()">
-                        <i class="fas fa-code"></i>
-                        Mock Login (For Testing)
+                        <i class="fas fa-code"></i> Mock Login (Testing)
                     </button>
-                    
+
                     <button class="btn guest-login-btn" onclick="guestLogin()">
-                        <i class="fas fa-user-clock"></i>
-                        Continue as Guest
+                        <i class="fas fa-user-clock"></i> Continue as Guest
                     </button>
                 </div>
 
@@ -48,113 +51,101 @@
             </div>
         </div>
 
-        <!-- Main App Section -->
+        <!-- ====================== APP SECTION ====================== -->
         <div id="app-section" style="display: none;">
             <div class="glass-card">
-                <!-- User Welcome -->
+
+                <!-- USER WELCOME -->
                 <div class="user-welcome">
-                    <div class="avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <h2>
-                        Welcome back, 
-                        <span id="username" style="color: var(--primary);">User</span>!
-                    </h2>
-                    <p style="color: var(--gray); margin-top: 5px;" id="login-type">
-                        Authenticated with Pi Wallet
-                    </p>
+                    <div class="avatar"><i class="fas fa-user"></i></div>
+                    <h2>Welcome back, <span id="username" class="highlight">User</span>!</h2>
+                    <p id="login-type" class="login-type">Authenticated with Pi Wallet</p>
                 </div>
 
-                <!-- Search Bar -->
+                <!-- SEARCH BAR -->
                 <div class="search-container">
                     <input type="text" id="searchInput" class="search-input" placeholder="Search products...">
                     <i class="fas fa-search search-icon" onclick="searchProducts()"></i>
                 </div>
 
-                <!-- Features Grid - DIPERBAIKI: Fungsi onclick sudah benar -->
+                <!-- FEATURE GRID -->
                 <div class="features-grid">
+
                     <div class="feature-card" onclick="openQRScanner()">
-                        <div class="feature-icon">
-                            <i class="fas fa-qrcode"></i>
-                        </div>
+                        <div class="feature-icon"><i class="fas fa-qrcode"></i></div>
                         <h3>QR Code Tracking</h3>
-                        <p style="color: var(--gray);">Scan QR codes to track products</p>
+                        <p>Scan QR codes to track products</p>
                     </div>
 
                     <div class="feature-card" onclick="showProductModal()">
-                        <div class="feature-icon">
-                            <i class="fas fa-box"></i>
-                        </div>
+                        <div class="feature-icon"><i class="fas fa-box"></i></div>
                         <h3>Product Registration</h3>
-                        <p style="color: var(--gray);">Register products on blockchain</p>
+                        <p>Register products on blockchain</p>
                     </div>
 
                     <div class="feature-card" onclick="showSupplyChainOverview()">
-                        <div class="feature-icon">
-                            <i class="fas fa-shipping-fast"></i>
-                        </div>
+                        <div class="feature-icon"><i class="fas fa-shipping-fast"></i></div>
                         <h3>Supply Chain Monitoring</h3>
-                        <p style="color: var(--gray);">Monitor products in real-time</p>
+                        <p>Monitor products in real-time</p>
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
+                <!-- ACTION BUTTONS -->
                 <div class="actions">
                     <button class="btn btn-primary" onclick="showProductModal()">
-                        <i class="fas fa-plus-circle"></i>
-                        Register Product
+                        <i class="fas fa-plus-circle"></i> Register Product
                     </button>
+
                     <button class="btn btn-success" onclick="createPayment()">
-                        <i class="fas fa-coins"></i>
-                        Make Payment (3.14 π)
+                        <i class="fas fa-coins"></i> Make Payment (3.14 π)
                     </button>
+
                     <button class="btn btn-outline" onclick="openQRScanner()">
-                        <i class="fas fa-camera"></i>
-                        Scan QR Code
+                        <i class="fas fa-camera"></i> Scan QR Code
                     </button>
                 </div>
 
-                <!-- Product List -->
+                <!-- PRODUCT LIST -->
                 <div class="product-list" id="productList">
-                    <h3 style="margin-bottom: 20px;">Your Products</h3>
+                    <h3>Your Products</h3>
                     <div id="productsContainer" class="products-container">
                         <div class="empty-state">
                             <i class="fas fa-box-open"></i>
                             <p>No products registered yet</p>
-                            <p style="font-size: 0.9rem; margin-top: 10px;">Click "Register Product" to add your first product</p>
+                            <p class="small-text">Click "Register Product" to add your first product</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Logout Button -->
-                <div style="text-align: center; margin-top: 30px;">
+                <!-- LOGOUT -->
+                <div class="center">
                     <button class="btn btn-outline" onclick="logout()">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
+                        <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Status Messages -->
         <div id="status"></div>
     </div>
 
-    <!-- Product Registration Modal -->
+    <!-- ====================== PRODUCT MODAL ====================== -->
     <div id="productModal" class="modal">
         <div class="modal-content">
+
             <span class="close-modal" onclick="closeModal('productModal')">&times;</span>
-            <h2 style="margin-bottom: 20px; color: var(--dark);">Register New Product</h2>
-            
+
+            <h2>Register New Product</h2>
+
             <div class="form-group">
-                <label for="productName">Product Name *</label>
-                <input type="text" id="productName" placeholder="Enter product name" oninput="updateProductPreview()">
+                <label>Product Name *</label>
+                <input type="text" id="productName" oninput="updateProductPreview()">
             </div>
-            
+
             <div class="form-group">
-                <label for="productCategory">Category *</label>
+                <label>Category *</label>
                 <select id="productCategory" onchange="updateProductPreview()">
-                    <option value="">Select category</option>
+                    <option value="">Select</option>
                     <option value="electronics">Electronics</option>
                     <option value="clothing">Clothing</option>
                     <option value="food">Food & Beverages</option>
@@ -162,201 +153,93 @@
                     <option value="other">Other</option>
                 </select>
             </div>
-            
-            <div class="form-group">
-                <label for="productDescription">Description</label>
-                <textarea id="productDescription" rows="3" placeholder="Enter product description"></textarea>
-            </div>
 
-            <!-- Quantity dengan Satuan -->
+            <!-- QUANTITY + UNIT -->
             <div class="form-group">
                 <label>Quantity *</label>
                 <div class="quantity-input-group">
-                    <div class="form-group">
-                        <input type="number" id="productQuantity" min="1" value="1" placeholder="Quantity">
-                    </div>
-                    <div class="form-group">
-                        <select id="productUnit">
-                            <option value="pcs">Pieces (pcs)</option>
-                            <option value="kg">Kilograms (kg)</option>
-                            <option value="g">Grams (g)</option>
-                            <option value="lb">Pounds (lb)</option>
-                            <option value="ton">Tons (ton)</option>
-                            <option value="l">Liters (L)</option>
-                            <option value="ml">Milliliters (ml)</option>
-                            <option value="m">Meters (m)</option>
-                            <option value="cm">Centimeters (cm)</option>
-                            <option value="box">Boxes</option>
-                            <option value="pack">Packs</option>
-                            <option value="set">Sets</option>
-                            <option value="pair">Pairs</option>
-                            <option value="bundle">Bundles</option>
-                            <option value="carton">Cartons</option>
-                        </select>
-                    </div>
+                    <input type="number" id="productQuantity" min="1" value="1">
+                    <select id="productUnit">
+                        <option value="pcs">pcs</option>
+                        <option value="kg">kg</option>
+                        <option value="g">g</option>
+                        <option value="ton">ton</option>
+                        <option value="box">box</option>
+                        <option value="pack">pack</option>
+                        <option value="set">set</option>
+                    </select>
                 </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="productPrice">Price (π)</label>
-                <input type="number" id="productPrice" step="0.01" placeholder="0.00">
             </div>
 
             <div class="form-group">
-                <label for="originCountry">Origin Country *</label>
+                <label>Price (π)</label>
+                <input type="number" id="productPrice" step="0.01">
+            </div>
+
+            <div class="form-group">
+                <label>Origin Country *</label>
                 <select id="originCountry">
-                    <option value="">Select Country</option>
+                    <option value="">Select</option>
                     <option value="Indonesia">Indonesia</option>
                     <option value="Thailand">Thailand</option>
                     <option value="China">China</option>
                     <option value="Japan">Japan</option>
                     <option value="United States">United States</option>
-                    <option value="Germany">Germany</option>
-                    <option value="Other">Other</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="originCity">Origin City *</label>
-                <input type="text" id="originCity" placeholder="Enter city">
+                <label>Origin City *</label>
+                <input type="text" id="originCity">
             </div>
-            
+
             <div class="form-group">
                 <label>Upload Date</label>
-                <div class="hash-code" id="uploadDateDisplay">Will be generated automatically</div>
+                <div class="hash-code" id="uploadDateDisplay">Auto generated</div>
             </div>
-            
+
             <div class="form-group">
-                <label>Unique Hash Code</label>
-                <div class="hash-code" id="hashCodeDisplay">Will be generated automatically</div>
+                <label>Unique Hash</label>
+                <div class="hash-code" id="hashCodeDisplay">Auto generated</div>
             </div>
-            
-            <button class="btn btn-primary" onclick="submitProduct()" style="width: 100%;">
+
+            <button class="btn btn-primary" onclick="submitProduct()" style="width:100%;">
                 <i class="fas fa-save"></i> Register Product
             </button>
+
         </div>
     </div>
 
-    <!-- Product Detail Modal -->
-    <div id="productDetailModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('productDetailModal')">&times;</span>
-            <h2 style="margin-bottom: 20px; color: var(--dark);" id="detailProductName">Product Details</h2>
-            
-            <div class="product-detail-grid">
-                <div class="detail-item">
-                    <div class="detail-label">Category</div>
-                    <div class="detail-value" id="detailCategory">-</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Quantity</div>
-                    <div class="detail-value" id="detailQuantity">-</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Price</div>
-                    <div class="detail-value" id="detailPrice">-</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Origin</div>
-                    <div class="detail-value" id="detailOrigin">-</div>
-                </div>
-            </div>
-            
-            <div class="detail-item">
-                <div class="detail-label">Description</div>
-                <div class="detail-value" id="detailDescription">-</div>
-            </div>
-            
-            <div class="detail-item">
-                <div class="detail-label">Upload Date</div>
-                <div class="detail-value" id="detailUploadDate">-</div>
-            </div>
-            
-            <div class="detail-item">
-                <div class="detail-label">Hash Code</div>
-                <div class="hash-code" id="detailHashCode">-</div>
-            </div>
-            
-            <!-- Supply Chain Timeline -->
-            <div class="supply-chain-timeline">
-                <h3 style="margin: 20px 0 15px; color: var(--dark);">Supply Chain Timeline</h3>
-                <div id="supplyChainTimeline">
-                    <!-- Timeline items will be added here dynamically -->
-                </div>
-            </div>
-            
-            <button class="btn btn-outline" onclick="closeModal('productDetailModal')" style="width: 100%; margin-top: 20px;">
-                <i class="fas fa-times"></i> Close
-            </button>
-        </div>
-    </div>
-
-    <!-- QR Scanner Modal -->
+    <!-- ====================== QR SCANNER MODAL ====================== -->
     <div id="qrScannerModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('qrScannerModal')">&times;</span>
-            <h2 style="margin-bottom: 20px; color: var(--dark);">QR Code Scanner</h2>
-            
+
+            <h2>QR Code Scanner</h2>
+
             <div class="qr-scanner-container">
                 <div class="qr-placeholder">
                     <i class="fas fa-camera"></i>
-                    <p>QR Scanner would activate here</p>
+                    <p>QR Scanner will activate here</p>
                 </div>
-                
+
                 <div class="qr-result" id="qrResult" style="display: none;">
-                    <h4>Scanned Result:</h4>
+                    <h4>Scanned:</h4>
                     <div class="hash-code" id="scannedHash"></div>
                 </div>
             </div>
-            
-            <div class="actions" style="margin-top: 20px;">
+
+            <div class="actions">
                 <button class="btn btn-primary" onclick="simulateQRScan()">
-                    <i class="fas fa-qrcode"></i>
-                    Simulate QR Scan
-                </button>
-                <button class="btn btn-outline" onclick="closeModal('qrScannerModal')">
-                    <i class="fas fa-times"></i>
-                    Close
+                    <i class="fas fa-qrcode"></i> Simulate QR Scan
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Supply Chain Overview Modal -->
-    <div id="supplyChainModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('supplyChainModal')">&times;</span>
-            <h2 style="margin-bottom: 20px; color: var(--dark);">Supply Chain Overview</h2>
-            
-            <div class="supply-chain-stats">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalProducts">0</div>
-                    <div class="stat-label">Total Products</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="activeShipments">0</div>
-                    <div class="stat-label">Active Shipments</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="completedDeliveries">0</div>
-                    <div class="stat-label">Completed</div>
-                </div>
-            </div>
-            
-            <div class="recent-activities">
-                <h3 style="margin: 20px 0 15px; color: var(--dark);">Recent Activities</h3>
-                <div id="recentActivities">
-                    <!-- Activities will be populated here -->
-                </div>
-            </div>
-            
-            <button class="btn btn-outline" onclick="closeModal('supplyChainModal')" style="width: 100%; margin-top: 20px;">
-                <i class="fas fa-times"></i> Close Overview
-            </button>
-        </div>
-    </div>
-
+    <!-- JS -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <script src="script.js"></script>
+
 </body>
 </html>
