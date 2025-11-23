@@ -8,6 +8,7 @@
     --danger: #ef4444;
     --success: #22c55e;
     --warning: #f59e0b;
+    --error: #dc2626;
 }
 
 * {
@@ -28,7 +29,7 @@ body {
 
 .container {
     width: 100%;
-    max-width: 400px;
+    max-width: 500px;
     margin: 0 auto;
 }
 
@@ -202,6 +203,12 @@ body {
     margin-bottom: 25px;
 }
 
+@media (min-width: 480px) {
+    .features-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 .feature-card {
     background: white;
     padding: 20px;
@@ -245,6 +252,8 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
     padding: 20px;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-content {
@@ -256,9 +265,6 @@ body {
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
-    margin: 0 auto;
-    top: 50%;
-    transform: translateY(-50%);
 }
 
 .close-modal {
@@ -315,6 +321,7 @@ body {
     font-size: 14px;
     color: var(--dark);
     border: 1px dashed #d1d5db;
+    word-break: break-all;
 }
 
 .product-detail-grid {
@@ -346,9 +353,10 @@ body {
 
 .timeline-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     padding: 12px 0;
     border-bottom: 1px solid #f3f4f6;
+    position: relative;
 }
 
 .timeline-item:last-child {
@@ -361,6 +369,8 @@ body {
     background: var(--primary);
     border-radius: 50%;
     margin-right: 15px;
+    margin-top: 5px;
+    flex-shrink: 0;
 }
 
 .timeline-content {
@@ -384,10 +394,16 @@ body {
     border-radius: 12px;
     background: var(--success);
     color: white;
+    display: inline-block;
 }
 
 .product-list {
     margin-top: 25px;
+}
+
+.products-container {
+    max-height: 400px;
+    overflow-y: auto;
 }
 
 .product-item {
@@ -407,8 +423,8 @@ body {
 
 .product-header {
     display: flex;
-    justify-content: between;
-    align-items: center;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 8px;
 }
 
@@ -428,6 +444,20 @@ body {
     gap: 15px;
     font-size: 12px;
     color: var(--gray);
+    flex-wrap: wrap;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--gray);
+}
+
+.empty-state i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: var(--gray);
+    opacity: 0.5;
 }
 
 .debug-panel {
@@ -439,14 +469,176 @@ body {
     font-family: monospace;
     font-size: 12px;
     border: 1px solid #374151;
+    max-height: 150px;
+    overflow-y: auto;
 }
 
 .debug-item {
     margin-bottom: 5px;
+    padding: 4px 0;
+    border-bottom: 1px solid #374151;
 }
 
 .debug-item:last-child {
     margin-bottom: 0;
+    border-bottom: none;
+}
+
+/* QR Scanner Styles */
+.qr-scanner-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.qr-placeholder {
+    background: #f3f4f6;
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 40px 20px;
+    margin-bottom: 20px;
+}
+
+.qr-placeholder i {
+    font-size: 48px;
+    color: var(--gray);
+    margin-bottom: 15px;
+}
+
+.qr-result {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+/* Supply Chain Stats */
+.supply-chain-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    border: 2px solid #f3f4f6;
+}
+
+.stat-number {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--gray);
+    text-transform: uppercase;
+}
+
+/* Recent Activities */
+.recent-activities {
+    margin-top: 20px;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.activity-icon i {
+    font-size: 14px;
+    color: white;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-title {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 2px;
+}
+
+.activity-time {
+    font-size: 12px;
+    color: var(--gray);
+}
+
+/* Status Messages */
+#status {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    width: 90%;
+    max-width: 400px;
+}
+
+.status-message {
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideDown 0.3s ease;
+}
+
+.status-success {
+    background: var(--success);
+    color: white;
+}
+
+.status-error {
+    background: var(--error);
+    color: white;
+}
+
+.status-warning {
+    background: var(--warning);
+    color: white;
+}
+
+.status-info {
+    background: var(--secondary);
+    color: white;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 /* Responsive Design */
@@ -472,17 +664,14 @@ body {
     .quantity-input-group {
         grid-template-columns: 1fr;
     }
-}
-
-/* Pi Browser Specific Fixes */
-.pi-browser-fix {
-    -webkit-overflow-scrolling: touch;
-}
-
-/* Ensure proper viewport for Pi Browser */
-@viewport {
-    width: device-width;
-    zoom: 1.0;
+    
+    .supply-chain-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Loading animation */
@@ -498,4 +687,23 @@ body {
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+/* View Detail Button */
+.view-detail-btn {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.view-detail-btn:hover {
+    background: var(--primary);
+    color: white;
 }
