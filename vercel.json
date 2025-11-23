@@ -1,11 +1,6 @@
 {
   "version": 2,
   "name": "pi-trace",
-  "builds": [
-    { "src": "**/*.html", "use": "@vercel/static" },
-    { "src": "**/*.css", "use": "@vercel/static" },
-    { "src": "**/*.js", "use": "@vercel/static" }
-  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
