@@ -1,213 +1,185 @@
-// =============================================
-// FIXED VERSION - ALL ISSUES RESOLVED
-// =============================================
+// Pi Network Configuration
+const PI_APP_ID = 'pi_trace_app'; // Ganti dengan App ID dari Pi Developer Portal
+const PI_API_KEY = 'your_pi_api_key_here'; // Ganti dengan API Key dari Pi Developer Portal
 
-// Global state untuk menyimpan data
-let userProducts = [];
+// Global variables
+let pi = null;
 let currentUser = null;
-let allProducts = []; // Untuk pencarian
+let products = JSON.parse(localStorage.getItem('pi_trace_products')) || [];
 
-// Debug logging
-function debugLog(message, type = 'info') {
-    const debugPanel = document.getElementById('debugPanel');
-    if (debugPanel) {
-        const debugItem = document.createElement('div');
-        debugItem.className = `debug-item`;
-        debugItem.style.borderLeftColor = type === 'error' ? 'var(--error)' : 
-                                       type === 'success' ? 'var(--success)' : 'var(--primary)';
-        debugItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-        debugPanel.appendChild(debugItem);
-        debugPanel.scrollTop = debugPanel.scrollHeight;
-    }
-    console.log(`[PI-TRACE] ${message}`);
-}
-
-// Show status messages
-function showStatus(message, type = 'info', duration = 5000) {
-    const statusDiv = document.getElementById('status');
-    if (!statusDiv) return;
-    
-    // Clear existing status
-    statusDiv.innerHTML = '';
-    
-    const statusElement = document.createElement('div');
-    statusElement.className = `status ${type}`;
-    statusElement.innerHTML = message;
-    
-    statusDiv.appendChild(statusElement);
-    
-    if (type !== 'error') {
-        setTimeout(() => {
-            if (statusElement.parentNode) {
-                statusElement.remove();
-            }
-        }, duration);
-    }
-}
-
-// Modal functions
-function showProductModal() {
-    debugLog('Opening product registration modal...');
-    document.getElementById('productModal').style.display = 'flex';
-    updateProductPreview();
-}
-
-function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
-}
-
-// Update product preview with date and hash
-function updateProductPreview() {
-    const name = document.getElementById('productName').value;
-    const category = document.getElementById('productCategory').value;
-    
-    if (name || category) {
-        const uploadDate = new Date();
-        document.getElementById('uploadDateDisplay').textContent = formatDate(uploadDate);
+// Initialize Pi SDK dengan error handling
+async function initializePiSDK() {
+    try {
+        addDebugLog('Initializing Pi SDK...');
         
-        const productData = {
-            name: name,
-            category: category
-        };
-        document.getElementById('hashCodeDisplay').textContent = generateHashCode(productData);
-    } else {
-        document.getElementById('uploadDateDisplay').textContent = 'Will be generated automatically';
-        document.getElementById('hashCodeDisplay').textContent = 'Will be generated automatically';
+        // Check if Pi SDK is available
+        if (typeof window.Pi === 'undefined') {
+            addDebugLog('Pi SDK not found, loading from CDN...');
+            await loadPiSDK();
+        }
+        
+        pi = window.Pi;
+        
+        if (!pi) {
+            throw new Error('Pi SDK failed to load');
+        }
+        
+        // Initialize Pi SDK
+        await pi.init(PI_APP_ID, async function(initResult) {
+            addDebugLog('Pi SDK initialized: ' + JSON.stringify(initResult));
+            
+            if (initResult) {
+                // Check if user is already authenticated
+                const authenticated = pi.isAuthenticated();
+                addDebugLog('User authenticated: ' + authenticated);
+                
+                if (authenticated) {
+                    await handlePiAuthSuccess(initResult.user);
+                }
+            }
+        });
+        
+        addDebugLog('Pi SDK initialization completed');
+    } catch (error) {
+        addDebugLog('Pi SDK initialization failed: ' + error.message);
+        console.error('Pi SDK Error:', error);
     }
 }
 
-// Generate unique hash code
-function generateHashCode(productData) {
-    const timestamp = new Date().getTime();
-    const random = Math.random().toString(36).substring(2, 15);
-    const dataString = `${productData.name}_${productData.category}_${timestamp}_${random}`;
-    
-    let hash = 0;
-    for (let i = 0; i < dataString.length; i++) {
-        const char = dataString.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash;
-    }
-    
-    return `PITRACE_${Math.abs(hash).toString(16).toUpperCase()}`;
+// Load Pi SDK from CDN
+function loadPiSDK() {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://sdk.minepi.com/pi-sdk.js';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
 }
 
-// Format date for display
-function formatDate(date) {
-    const options = { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    };
-    return date.toLocaleDateString('en-US', options);
+// Pi Login Function dengan error handling
+async function loginWithPi() {
+    try {
+        addDebugLog('Starting Pi login process...');
+        
+        if (!pi) {
+            await initializePiSDK();
+        }
+        
+        const scopes = ['username', 'payments', 'wallet_address'];
+        addDebugLog('Requesting scopes: ' + scopes.join(', '));
+        
+        // Authenticate with Pi Network
+        const user = await pi.authenticate(scopes, onIncompletePaymentFound);
+        addDebugLog('Pi authentication successful: ' + JSON.stringify(user));
+        
+        await handlePiAuthSuccess(user);
+        
+    } catch (error) {
+        addDebugLog('Pi login failed: ' + error.message);
+        showStatus('Pi login failed: ' + error.message, 'error');
+        console.error('Pi Login Error:', error);
+        
+        // Fallback to mock login
+        showStatus('Falling back to mock login...', 'warning');
+        setTimeout(mockLogin, 2000);
+    }
 }
 
-// Get unit display name
-function getUnitDisplayName(unit) {
-    const unitNames = {
-        'pcs': 'pcs',
-        'kg': 'kg',
-        'g': 'g',
-        'lb': 'lb',
-        'ton': 'ton',
-        'l': 'L',
-        'ml': 'ml',
-        'm': 'm',
-        'cm': 'cm',
-        'box': 'boxes',
-        'pack': 'packs',
-        'set': 'sets',
-        'pair': 'pairs',
-        'bundle': 'bundles',
-        'carton': 'cartons'
+// Handle successful Pi authentication
+async function handlePiAuthSuccess(user) {
+    currentUser = {
+        username: user.username,
+        uid: user.uid,
+        walletAddress: user.walletAddress,
+        loginMethod: 'pi'
     };
-    return unitNames[unit] || unit;
+    
+    addDebugLog('User authenticated: ' + user.username);
+    showStatus('Welcome back, ' + user.username + '!', 'success');
+    
+    // Save user data
+    localStorage.setItem('pi_trace_user', JSON.stringify(currentUser));
+    
+    // Show main app
+    showAppSection();
 }
 
-// =============================================
-// PRODUCT REGISTRATION - WORKING VERSION WITH UNITS
-// =============================================
-
-function submitProduct() {
-    debugLog('Submitting product registration...');
-    
-    // Get form values
-    const name = document.getElementById('productName').value;
-    const category = document.getElementById('productCategory').value;
-    const description = document.getElementById('productDescription').value;
-    const quantity = document.getElementById('productQuantity').value;
-    const unit = document.getElementById('productUnit').value;
-    const price = document.getElementById('productPrice').value;
-    const originCountry = document.getElementById('originCountry').value;
-    const originCity = document.getElementById('originCity').value;
-    
-    // Validation
-    if (!name) {
-        showStatus('❌ Please enter product name', 'error');
-        return;
-    }
-    
-    if (!category) {
-        showStatus('❌ Please select product category', 'error');
-        return;
-    }
-    
-    if (!quantity || quantity <= 0) {
-        showStatus('❌ Please enter valid quantity', 'error');
-        return;
-    }
-    
-    if (!originCountry || !originCity) {
-        showStatus('❌ Please enter origin location', 'error');
-        return;
-    }
-
-    // Generate product data
-    const uploadDate = new Date();
-    const productData = {
-        name: name,
-        category: category,
-        description: description,
-        quantity: quantity,
-        unit: unit,
-        price: price
+// Mock login for testing
+function mockLogin() {
+    currentUser = {
+        username: 'pi_tester_' + Math.floor(Math.random() * 1000),
+        uid: 'mock_uid_' + Date.now(),
+        walletAddress: 'mock_wallet_' + Math.random().toString(36).substr(2, 9),
+        loginMethod: 'mock'
     };
     
-    const hashCode = generateHashCode(productData);
+    addDebugLog('Mock login: ' + currentUser.username);
+    showStatus('Mock login successful!', 'success');
     
-    // Create new product object
-    const newProduct = {
-        id: Date.now(),
-        name: name,
-        category: category,
-        description: description || 'No description provided',
-        quantity: quantity,
-        unit: unit,
-        unitDisplay: getUnitDisplayName(unit),
-        quantityDisplay: `${quantity} ${getUnitDisplayName(unit)}`,
-        price: price || '0.00',
-        origin: `${originCity}, ${originCountry}`,
-        timestamp: formatDate(uploadDate),
-        uploadDate: uploadDate,
-        hashCode: hashCode,
-        status: 'registered'
-    };
+    localStorage.setItem('pi_trace_user', JSON.stringify(currentUser));
+    showAppSection();
+}
 
-    // Add to products array
-    userProducts.push(newProduct);
-    allProducts.push(newProduct); // Juga tambahkan ke allProducts untuk pencarian
+// Guest login
+function guestLogin() {
+    currentUser = {
+        username: 'Guest_User',
+        uid: 'guest_uid',
+        walletAddress: null,
+        loginMethod: 'guest'
+    };
     
-    // Update UI
+    addDebugLog('Guest login');
+    showStatus('Welcome as Guest! Some features may be limited.', 'warning');
+    
+    localStorage.setItem('pi_trace_user', JSON.stringify(currentUser));
+    showAppSection();
+}
+
+// Show main application section
+function showAppSection() {
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('app-section').style.display = 'block';
+    
+    // Update user info
+    if (currentUser) {
+        document.getElementById('username').textContent = currentUser.username;
+        document.getElementById('login-type').textContent = 
+            `Authenticated with ${currentUser.loginMethod === 'pi' ? 'Pi Wallet' : 
+                                currentUser.loginMethod === 'mock' ? 'Mock Account' : 'Guest Account'}`;
+    }
+    
+    // Show existing products
     displayProducts();
-    closeModal('productModal');
+}
+
+// Logout function
+function logout() {
+    if (pi && currentUser && currentUser.loginMethod === 'pi') {
+        pi.logout();
+    }
     
-    // Show success message
-    showStatus('✅ Product registered successfully!', 'success');
-    debugLog(`Product registered: ${name} (${quantity} ${getUnitDisplayName(unit)})`);
+    currentUser = null;
+    localStorage.removeItem('pi_trace_user');
     
-    // Clear form
+    document.getElementById('app-section').style.display = 'none';
+    document.getElementById('login-section').style.display = 'block';
+    
+    addDebugLog('User logged out');
+    showStatus('Successfully logged out', 'success');
+}
+
+// Product registration modal
+function showProductModal() {
+    // Generate hash and date
+    const hash = generateHashCode();
+    const now = new Date().toLocaleString();
+    
+    document.getElementById('hashCodeDisplay').textContent = hash;
+    document.getElementById('uploadDateDisplay').textContent = now;
+    
+    // Reset form
     document.getElementById('productName').value = '';
     document.getElementById('productCategory').value = '';
     document.getElementById('productDescription').value = '';
@@ -216,338 +188,349 @@ function submitProduct() {
     document.getElementById('productPrice').value = '';
     document.getElementById('originCountry').value = '';
     document.getElementById('originCity').value = '';
+    
+    document.getElementById('productModal').style.display = 'block';
 }
 
+// Close modal
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// Generate unique hash code
+function generateHashCode() {
+    return 'PT_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9).toUpperCase();
+}
+
+// Submit product
+function submitProduct() {
+    const product = {
+        id: generateHashCode(),
+        name: document.getElementById('productName').value,
+        category: document.getElementById('productCategory').value,
+        description: document.getElementById('productDescription').value,
+        quantity: document.getElementById('productQuantity').value + ' ' + document.getElementById('productUnit').value,
+        price: document.getElementById('productPrice').value + ' π',
+        origin: document.getElementById('originCountry').value + ', ' + document.getElementById('originCity').value,
+        uploadDate: new Date().toLocaleString(),
+        hash: generateHashCode(),
+        owner: currentUser ? currentUser.username : 'Unknown',
+        supplyChain: generateSupplyChainTimeline()
+    };
+    
+    // Validation
+    if (!product.name || !product.category || !product.price) {
+        showStatus('Please fill in all required fields', 'error');
+        return;
+    }
+    
+    products.push(product);
+    localStorage.setItem('pi_trace_products', JSON.stringify(products));
+    
+    closeModal('productModal');
+    displayProducts();
+    showStatus('Product registered successfully!', 'success');
+    
+    addDebugLog('New product registered: ' + product.name);
+}
+
+// Display products
 function displayProducts() {
     const container = document.getElementById('productsContainer');
     const productList = document.getElementById('productList');
     
-    if (!container) return;
-    
-    container.innerHTML = '';
-
-    if (userProducts.length === 0) {
-        // Show empty state
-        container.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-box-open"></i>
-                <p>No products registered yet</p>
-                <p style="font-size: 0.9rem; margin-top: 10px;">Click "Register Product" to add your first product</p>
-            </div>
-        `;
+    if (products.length === 0) {
         productList.style.display = 'none';
         return;
     }
-
-    // Show product list
+    
     productList.style.display = 'block';
+    container.innerHTML = '';
+    
+    // Filter products by current user if logged in
+    const userProducts = currentUser ? 
+        products.filter(p => p.owner === currentUser.username) : 
+        products;
     
     userProducts.forEach(product => {
         const productElement = document.createElement('div');
-        productElement.className = 'product-card';
+        productElement.className = 'product-item';
+        productElement.onclick = () => showProductDetail(product);
+        
         productElement.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
-                <div style="flex: 1;">
-                    <h4 style="color: var(--primary); margin-bottom: 5px;">${product.name}</h4>
-                    <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 5px;">
-                        ${product.category} • ${product.price} π 
-                        <span class="quantity-badge">
-                            <i class="fas fa-weight-hanging"></i> ${product.quantityDisplay}
-                        </span>
-                    </p>
-                </div>
-                <span style="background: var(--success); color: white; padding: 4px 8px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap;">
-                    ${product.status}
-                </span>
+            <div class="product-header">
+                <div class="product-name">${product.name}</div>
+                <div class="product-price">${product.price}</div>
             </div>
-            <div style="margin-bottom: 8px;">
-                <p style="color: var(--gray); font-size: 0.8rem; margin-bottom: 3px;">
-                    <strong>Origin:</strong> ${product.origin}
-                </p>
-                <p style="color: var(--gray); font-size: 0.8rem;">
-                    <strong>Upload Date:</strong> ${product.timestamp}
-                </p>
-            </div>
-            <p style="color: var(--gray); font-size: 0.85rem; margin-bottom: 15px;">
-                ${product.description}
-            </p>
-            <div style="display: flex; justify-content: flex-end;">
-                <button class="view-detail-btn" onclick="viewProductDetail(${product.id})">
-                    <i class="fas fa-eye"></i> View Details
-                </button>
+            <div class="product-meta">
+                <span>${product.category}</span>
+                <span>${product.quantity}</span>
+                <span>${product.uploadDate}</span>
             </div>
         `;
+        
         container.appendChild(productElement);
     });
 }
 
-// =============================================
-// FIXED: VIEW PRODUCT DETAIL FUNCTION
-// =============================================
-
-function viewProductDetail(productId) {
-    debugLog(`Viewing product details for ID: ${productId}`);
-    const product = userProducts.find(p => p.id === productId);
-    
-    if (!product) {
-        showStatus('❌ Product not found', 'error');
-        return;
-    }
-
-    // Populate modal dengan data produk
+// Show product detail
+function showProductDetail(product) {
     document.getElementById('detailProductName').textContent = product.name;
     document.getElementById('detailCategory').textContent = product.category;
-    document.getElementById('detailQuantity').textContent = product.quantityDisplay;
-    document.getElementById('detailPrice').textContent = `${product.price} π`;
+    document.getElementById('detailQuantity').textContent = product.quantity;
+    document.getElementById('detailPrice').textContent = product.price;
     document.getElementById('detailOrigin').textContent = product.origin;
     document.getElementById('detailDescription').textContent = product.description;
-    document.getElementById('detailUploadDate').textContent = product.timestamp;
-    document.getElementById('detailHashCode').textContent = product.hashCode;
-
-    // Generate supply chain timeline
-    generateSupplyChainTimeline(product);
-
-    // Show modal
-    document.getElementById('productDetailModal').style.display = 'flex';
+    document.getElementById('detailUploadDate').textContent = product.uploadDate;
+    document.getElementById('detailHashCode').textContent = product.hash;
     
-    showStatus(`🔍 Viewing details for: ${product.name}`, 'info');
-}
-
-function generateSupplyChainTimeline(product) {
+    // Display supply chain timeline
     const timelineContainer = document.getElementById('supplyChainTimeline');
     timelineContainer.innerHTML = '';
+    
+    if (product.supplyChain) {
+        product.supplyChain.forEach(item => {
+            const timelineItem = document.createElement('div');
+            timelineItem.className = 'timeline-item';
+            timelineItem.innerHTML = `
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-title">${item.event}</div>
+                    <div class="timeline-date">${item.date}</div>
+                </div>
+                <div class="timeline-status">${item.status}</div>
+            `;
+            timelineContainer.appendChild(timelineItem);
+        });
+    }
+    
+    document.getElementById('productDetailModal').style.display = 'block';
+}
 
-    // Generate timeline events based on product
-    const events = [
+// Generate supply chain timeline
+function generateSupplyChainTimeline() {
+    const now = new Date();
+    return [
         {
-            date: new Date(product.uploadDate.getTime() - 7 * 24 * 60 * 60 * 1000),
-            title: 'Raw Materials Sourced',
-            description: 'Raw materials collected from suppliers',
-            icon: 'fas fa-boxes'
+            event: 'Product Registered',
+            date: now.toLocaleString(),
+            status: 'Completed'
         },
         {
-            date: new Date(product.uploadDate.getTime() - 5 * 24 * 60 * 60 * 1000),
-            title: 'Manufacturing Started',
-            description: 'Production process initiated at factory',
-            icon: 'fas fa-industry'
+            event: 'Quality Check',
+            date: new Date(now.getTime() + 2 * 60 * 60 * 1000).toLocaleString(),
+            status: 'Pending'
         },
         {
-            date: new Date(product.uploadDate.getTime() - 3 * 24 * 60 * 60 * 1000),
-            title: 'Quality Control',
-            description: 'Product passed quality assurance tests',
-            icon: 'fas fa-clipboard-check'
+            event: 'Warehouse Storage',
+            date: new Date(now.getTime() + 4 * 60 * 60 * 1000).toLocaleString(),
+            status: 'Pending'
         },
         {
-            date: new Date(product.uploadDate.getTime() - 1 * 24 * 60 * 60 * 1000),
-            title: 'Packaging Completed',
-            description: 'Product packaged and ready for shipment',
-            icon: 'fas fa-box'
+            event: 'Shipping',
+            date: new Date(now.getTime() + 8 * 60 * 60 * 1000).toLocaleString(),
+            status: 'Pending'
         },
         {
-            date: product.uploadDate,
-            title: 'Product Registered',
-            description: 'Product registered on blockchain',
-            icon: 'fas fa-link'
+            event: 'Delivery',
+            date: new Date(now.getTime() + 24 * 60 * 60 * 1000).toLocaleString(),
+            status: 'Pending'
         }
     ];
+}
 
-    events.forEach(event => {
-        const timelineItem = document.createElement('div');
-        timelineItem.className = 'timeline-item';
+// Create Pi payment
+async function createPayment() {
+    try {
+        if (!currentUser || currentUser.loginMethod !== 'pi') {
+            showStatus('Please login with Pi Wallet to make payments', 'error');
+            return;
+        }
         
-        timelineItem.innerHTML = `
-            <div class="timeline-icon">
-                <i class="${event.icon}"></i>
+        if (!pi) {
+            await initializePiSDK();
+        }
+        
+        const paymentData = {
+            amount: 3.14,
+            memo: 'Payment for PI TRACE Service - Supply Chain Tracking',
+            metadata: {
+                product: 'PI TRACE Service',
+                user: currentUser.username,
+                timestamp: Date.now()
+            }
+        };
+        
+        addDebugLog('Creating payment: ' + JSON.stringify(paymentData));
+        
+        const payment = await pi.createPayment(paymentData, {
+            onReadyForServerApproval: (paymentId) => {
+                addDebugLog('Payment ready for approval: ' + paymentId);
+                showStatus('Payment processing...', 'info');
+            },
+            onReadyForServerCompletion: (paymentId, txid) => {
+                addDebugLog('Payment ready for completion: ' + paymentId);
+                showStatus('Payment completed! TXID: ' + txid, 'success');
+            },
+            onCancel: (paymentId) => {
+                addDebugLog('Payment cancelled: ' + paymentId);
+                showStatus('Payment cancelled', 'warning');
+            },
+            onError: (error, paymentId) => {
+                addDebugLog('Payment error: ' + error + ' - ' + paymentId);
+                showStatus('Payment failed: ' + error, 'error');
+            }
+        });
+        
+    } catch (error) {
+        addDebugLog('Payment creation failed: ' + error.message);
+        showStatus('Payment failed: ' + error.message, 'error');
+        console.error('Payment Error:', error);
+    }
+}
+
+// Handle incomplete payments
+function onIncompletePaymentFound(payment) {
+    addDebugLog('Incomplete payment found: ' + JSON.stringify(payment));
+    // Implement your logic to handle incomplete payments
+}
+
+// Search products
+function searchProducts() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const filteredProducts = products.filter(product => 
+        product.name.toLowerCase().includes(searchTerm) ||
+        product.category.toLowerCase().includes(searchTerm) ||
+        product.description.toLowerCase().includes(searchTerm)
+    );
+    
+    // Update display with filtered products
+    const container = document.getElementById('productsContainer');
+    container.innerHTML = '';
+    
+    filteredProducts.forEach(product => {
+        const productElement = document.createElement('div');
+        productElement.className = 'product-item';
+        productElement.onclick = () => showProductDetail(product);
+        
+        productElement.innerHTML = `
+            <div class="product-header">
+                <div class="product-name">${product.name}</div>
+                <div class="product-price">${product.price}</div>
             </div>
-            <div class="timeline-content">
-                <div class="timeline-date">${formatDate(event.date)}</div>
-                <div class="timeline-title">${event.title}</div>
-                <div class="timeline-description">${event.description}</div>
+            <div class="product-meta">
+                <span>${product.category}</span>
+                <span>${product.quantity}</span>
+                <span>${product.uploadDate}</span>
             </div>
         `;
         
-        timelineContainer.appendChild(timelineItem);
+        container.appendChild(productElement);
     });
 }
 
-// =============================================
-// SEARCH FUNCTIONALITY - FIXED
-// =============================================
-
-function searchProducts() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-    debugLog(`Searching for: ${searchTerm}`);
-    
-    if (!searchTerm) {
-        // Jika pencarian kosong, tampilkan semua produk user
-        userProducts = [...allProducts];
-        displayProducts();
-        showStatus('🔍 Showing all products', 'info');
-        return;
-    }
-    
-    // Filter produk berdasarkan pencarian
-    userProducts = allProducts.filter(product => 
-        product.name.toLowerCase().includes(searchTerm) ||
-        product.category.toLowerCase().includes(searchTerm) ||
-        product.description.toLowerCase().includes(searchTerm) ||
-        product.origin.toLowerCase().includes(searchTerm)
-    );
-    
-    // Update tampilan
-    displayProducts();
-    
-    if (userProducts.length === 0) {
-        showStatus('❌ No products found matching your search', 'warning');
-    } else {
-        showStatus(`✅ Found ${userProducts.length} product(s) matching "${searchTerm}"`, 'success');
-    }
-}
-
-// Event listener untuk search input (real-time search)
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            // Debounce search untuk performa
-            clearTimeout(this.searchTimeout);
-            this.searchTimeout = setTimeout(() => {
-                searchProducts();
-            }, 300);
-        });
-        
-        // Juga bisa search dengan Enter
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchProducts();
-            }
-        });
-    }
-});
-
-// =============================================
-// LOGIN FUNCTIONS - SIMPLE & WORKING
-// =============================================
-
-function loginWithPi() {
-    debugLog('Starting Pi login...');
-    showStatus('<div class="loading-spinner"></div> Connecting to Pi Network...', 'info');
-    
-    // Simulate Pi login process
-    setTimeout(() => {
-        const username = 'PiUser_' + Math.floor(Math.random() * 1000);
-        switchToApp(username, 'pi');
-        showStatus('✅ Login successful! Welcome to PI TRACE.', 'success');
-        debugLog(`Pi login successful: ${username}`);
-    }, 2000);
-}
-
-function mockLogin() {
-    debugLog('Starting mock login...');
-    
-    const username = 'DemoUser';
-    switchToApp(username, 'mock');
-    showStatus('🧪 Mock login active - Use Pi Browser for real authentication', 'warning');
-    debugLog('Mock login successful');
-}
-
-function guestLogin() {
-    debugLog('Starting guest login...');
-    
-    const username = 'Guest_' + Math.random().toString(36).substr(2, 6);
-    switchToApp(username, 'guest');
-    showStatus('👋 Welcome Guest! Some features may be limited.', 'info');
-    debugLog('Guest login successful');
-}
-
-function switchToApp(username, loginType) {
-    // Update user info
-    currentUser = { username, loginType };
-    document.getElementById('username').textContent = username;
-    
-    // Update login type message
-    const loginTypeElement = document.getElementById('login-type');
-    if (loginType === 'pi') {
-        loginTypeElement.textContent = '🔐 Authenticated with Pi Wallet';
-        loginTypeElement.style.color = 'var(--success)';
-    } else if (loginType === 'mock') {
-        loginTypeElement.textContent = '🧪 Mock Login - Testing Mode';
-        loginTypeElement.style.color = 'var(--warning)';
-    } else {
-        loginTypeElement.textContent = '👤 Guest Mode - Limited Features';
-        loginTypeElement.style.color = 'var(--warning)';
-    }
-    
-    // Switch to app section
-    document.getElementById('login-section').style.display = 'none';
-    document.getElementById('app-section').style.display = 'block';
-    
-    // Reset search
-    document.getElementById('searchInput').value = '';
-    
-    // Load products if any
-    displayProducts();
-}
-
-// =============================================
-// APP FUNCTIONALITY
-// =============================================
-
-function createPayment() {
-    debugLog('Creating payment...');
-    showStatus('💰 Payment of 3.14 π processed successfully!', 'success');
-    
-    setTimeout(() => {
-        showStatus('✅ Payment confirmed!', 'success');
-    }, 2000);
-}
-
+// QR Code scanning (mock implementation)
 function scanQRCode() {
-    debugLog('Opening QR scanner...');
-    showStatus('📷 QR scanner would open here', 'info');
+    showStatus('QR Code scanner would open here. This is a mock implementation.', 'info');
+    addDebugLog('QR Code scanning triggered');
+    
+    // In real implementation, this would open camera for QR scanning
+    setTimeout(() => {
+        showStatus('QR Code scanned successfully! Product data loaded.', 'success');
+    }, 2000);
 }
 
-function logout() {
-    debugLog('Logging out...');
-    
-    // Reset to login section
-    document.getElementById('app-section').style.display = 'none';
-    document.getElementById('login-section').style.display = 'block';
-    
-    // Reset data
-    userProducts = [];
-    allProducts = [];
-    currentUser = null;
-    
-    showStatus('✅ Logout successful', 'success');
-    debugLog('User logged out');
+// Debug logging
+function addDebugLog(message) {
+    const debugPanel = document.getElementById('debugPanel');
+    if (debugPanel) {
+        const logItem = document.createElement('div');
+        logItem.className = 'debug-item';
+        logItem.textContent = '[' + new Date().toLocaleTimeString() + '] ' + message;
+        debugPanel.appendChild(logItem);
+        debugPanel.scrollTop = debugPanel.scrollHeight;
+    }
+    console.log('PI TRACE:', message);
 }
 
-// =============================================
-// INITIALIZATION
-// =============================================
-
-function initializeApp() {
-    debugLog('Application initialized successfully');
-    showStatus('🚀 Application ready! Click any login button to start.', 'success');
+// Status messages
+function showStatus(message, type = 'info') {
+    const statusDiv = document.getElementById('status');
+    if (!statusDiv) return;
     
-    // Add event listeners for product form live updates
-    document.getElementById('productName').addEventListener('input', updateProductPreview);
-    document.getElementById('productCategory').addEventListener('change', updateProductPreview);
+    statusDiv.textContent = message;
+    statusDiv.className = `status-${type}`;
+    statusDiv.style.display = 'block';
     
-    // Close modal when clicking outside
-    window.addEventListener('click', function(event) {
-        const modals = document.querySelectorAll('.modal');
-        modals.forEach(modal => {
-            if (event.target === modal) {
-                modal.style.display = 'none';
+    // Create styles for status messages if they don't exist
+    if (!document.querySelector('#status-styles')) {
+        const style = document.createElement('style');
+        style.id = 'status-styles';
+        style.textContent = `
+            #status {
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 12px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                max-width: 90%;
+                text-align: center;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             }
-        });
-    });
+            .status-success { background: var(--success); }
+            .status-error { background: var(--danger); }
+            .status-warning { background: var(--warning); }
+            .status-info { background: var(--secondary); }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    setTimeout(() => {
+        statusDiv.style.display = 'none';
+    }, 5000);
 }
 
-// Initialize when page loads
-window.addEventListener('load', function() {
-    debugLog('Page loaded - Application ready');
-    initializeApp();
+// Check if user is already logged in on page load
+function checkExistingLogin() {
+    const savedUser = localStorage.getItem('pi_trace_user');
+    if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        addDebugLog('Existing user found: ' + currentUser.username);
+        showAppSection();
+    }
+}
+
+// Initialize application
+document.addEventListener('DOMContentLoaded', function() {
+    addDebugLog('PI TRACE Application starting...');
+    addDebugLog('User Agent: ' + navigator.userAgent);
+    
+    // Check for existing login
+    checkExistingLogin();
+    
+    // Initialize Pi SDK
+    initializePiSDK();
+    
+    // Add event listener for Enter key in search
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchProducts();
+        }
+    });
+    
+    addDebugLog('Application initialized successfully');
 });
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const modals = document.getElementsByClassName('modal');
+    for (let modal of modals) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    }
+};
