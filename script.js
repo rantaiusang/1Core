@@ -3,7 +3,13 @@
 // =============================================
 
 // Pi Network Configuration
-const PI_APP_ID = 'pi_trace_app'; // Ganti dengan App ID dari Pi Developer Portal
+const PI_CONFIG = {
+    apiKey: 'w4miz2guqh3rx3rd79agoyvmq6o1bos7frpuurptmadfvadybube5yqm0wuv10um',
+    version: "2.0",
+    sandbox: true
+};
+
+// Ganti dengan App ID dari Pi Developer Portal
 
 // Global variables
 let pi = null;
