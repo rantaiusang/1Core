@@ -1,245 +1,179 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
+    <title>Supply Chain Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PI TRACE - Supply Chain Tracking</title>
 
-    <!-- FIXED FONT AWESOME CDN -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ICONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+    <!-- YOUR STYLE -->
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <div class="container">
 
-        <!-- ====================== LOGIN SECTION ====================== -->
-        <div id="login-section">
-            <div class="glass-card">
+<!-- STATUS MESSAGE -->
+<div id="status"></div>
 
-                <div class="header">
-                    <div class="logo">
-                        <i class="fas fa-link"></i>
-                    </div>
-                    <h1 class="title">PI TRACE</h1>
-                    <p class="subtitle">Blockchain Supply Chain Tracking Solution</p>
-                </div>
+<div class="container">
 
-                <h2 class="center-text">Welcome to PI TRACE</h2>
-                <p class="center-sub">Track your products through the entire supply chain using blockchain technology.</p>
-
-                <div class="actions">
-                    <button class="btn btn-primary" onclick="loginWithPi()">
-                        <i class="fab fa-raspberry-pi"></i> Login with Pi Wallet
-                    </button>
-
-                    <button class="btn mock-login-btn" onclick="mockLogin()">
-                        <i class="fas fa-code"></i> Mock Login (Testing)
-                    </button>
-
-                    <button class="btn guest-login-btn" onclick="guestLogin()">
-                        <i class="fas fa-user-clock"></i> Continue as Guest
-                    </button>
-                </div>
-
-                <div class="debug-panel" id="debugPanel">
-                    <div class="debug-item">Ready - Click any login button to start</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ====================== APP SECTION ====================== -->
-        <div id="app-section" style="display: none;">
-            <div class="glass-card">
-
-                <!-- USER WELCOME -->
-                <div class="user-welcome">
-                    <div class="avatar"><i class="fas fa-user"></i></div>
-                    <h2>Welcome back, <span id="username" class="highlight">User</span>!</h2>
-                    <p id="login-type" class="login-type">Authenticated with Pi Wallet</p>
-                </div>
-
-                <!-- SEARCH BAR -->
-                <div class="search-container">
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search products...">
-                    <i class="fas fa-search search-icon" onclick="searchProducts()"></i>
-                </div>
-
-                <!-- FEATURE GRID -->
-                <div class="features-grid">
-
-                    <div class="feature-card" onclick="openQRScanner()">
-                        <div class="feature-icon"><i class="fas fa-qrcode"></i></div>
-                        <h3>QR Code Tracking</h3>
-                        <p>Scan QR codes to track products</p>
-                    </div>
-
-                    <div class="feature-card" onclick="showProductModal()">
-                        <div class="feature-icon"><i class="fas fa-box"></i></div>
-                        <h3>Product Registration</h3>
-                        <p>Register products on blockchain</p>
-                    </div>
-
-                    <div class="feature-card" onclick="showSupplyChainOverview()">
-                        <div class="feature-icon"><i class="fas fa-shipping-fast"></i></div>
-                        <h3>Supply Chain Monitoring</h3>
-                        <p>Monitor products in real-time</p>
-                    </div>
-                </div>
-
-                <!-- ACTION BUTTONS -->
-                <div class="actions">
-                    <button class="btn btn-primary" onclick="showProductModal()">
-                        <i class="fas fa-plus-circle"></i> Register Product
-                    </button>
-
-                    <button class="btn btn-success" onclick="createPayment()">
-                        <i class="fas fa-coins"></i> Make Payment (3.14 π)
-                    </button>
-
-                    <button class="btn btn-outline" onclick="openQRScanner()">
-                        <i class="fas fa-camera"></i> Scan QR Code
-                    </button>
-                </div>
-
-                <!-- PRODUCT LIST -->
-                <div class="product-list" id="productList">
-                    <h3>Your Products</h3>
-                    <div id="productsContainer" class="products-container">
-                        <div class="empty-state">
-                            <i class="fas fa-box-open"></i>
-                            <p>No products registered yet</p>
-                            <p class="small-text">Click "Register Product" to add your first product</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- LOGOUT -->
-                <div class="center">
-                    <button class="btn btn-outline" onclick="logout()">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div id="status"></div>
+    <!-- HEADER -->
+    <div class="glass-card header">
+        <div class="logo"><i class="fa fa-leaf"></i></div>
+        <div class="title">Supply Chain</div>
+        <div class="subtitle">Sistem Rantai Pasok Modern Terintegrasi</div>
     </div>
 
-    <!-- ====================== PRODUCT MODAL ====================== -->
-    <div id="productModal" class="modal">
-        <div class="modal-content">
+    <!-- USER WELCOME (HIDDEN FIRST TIME) -->
+    <div class="glass-card user-welcome" id="userSection" style="display:none;">
+        <div class="avatar"><i class="fa fa-user"></i></div>
+        <h3 id="welcomeUsername">Welcome</h3>
+    </div>
 
-            <span class="close-modal" onclick="closeModal('productModal')">&times;</span>
+    <!-- ACTION BUTTONS -->
+    <div class="glass-card actions" id="loginSection">
+        <button class="btn btn-primary" id="btnLogin">
+            <i class="fa fa-wallet"></i> Login Pi Wallet
+        </button>
 
-            <h2>Register New Product</h2>
+        <button class="btn mock-login-btn" id="btnMock">
+            <i class="fa fa-user-shield"></i> Mock Login (Admin)
+        </button>
 
-            <div class="form-group">
-                <label>Product Name *</label>
-                <input type="text" id="productName" oninput="updateProductPreview()">
+        <button class="btn guest-login-btn" id="btnGuest">
+            <i class="fa fa-user"></i> Masuk Sebagai Tamu
+        </button>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="glass-card search-container" id="searchArea" style="display:none;">
+        <input type="text" id="searchInput" class="search-input" placeholder="Cari produk / lokasi / kode hash…">
+        <i class="fa fa-search search-icon"></i>
+    </div>
+
+    <!-- FEATURES GRID -->
+    <div class="glass-card">
+        <div class="features-grid">
+            
+            <div class="feature-card" id="btnAddProduct">
+                <div class="feature-icon"><i class="fa fa-plus"></i></div>
+                Tambah Produk
             </div>
 
-            <div class="form-group">
-                <label>Category *</label>
-                <select id="productCategory" onchange="updateProductPreview()">
-                    <option value="">Select</option>
-                    <option value="electronics">Electronics</option>
-                    <option value="clothing">Clothing</option>
-                    <option value="food">Food & Beverages</option>
-                    <option value="cosmetics">Cosmetics</option>
-                    <option value="other">Other</option>
-                </select>
+            <div class="feature-card" id="btnProductList">
+                <div class="feature-icon"><i class="fa fa-box"></i></div>
+                Daftar Produk
             </div>
 
-            <!-- QUANTITY + UNIT -->
-            <div class="form-group">
-                <label>Quantity *</label>
-                <div class="quantity-input-group">
-                    <input type="number" id="productQuantity" min="1" value="1">
-                    <select id="productUnit">
-                        <option value="pcs">pcs</option>
-                        <option value="kg">kg</option>
-                        <option value="g">g</option>
-                        <option value="ton">ton</option>
-                        <option value="box">box</option>
-                        <option value="pack">pack</option>
-                        <option value="set">set</option>
-                    </select>
-                </div>
+            <div class="feature-card" id="btnScanQR">
+                <div class="feature-icon"><i class="fa fa-qrcode"></i></div>
+                Scan QR
             </div>
-
-            <div class="form-group">
-                <label>Price (π)</label>
-                <input type="number" id="productPrice" step="0.01">
-            </div>
-
-            <div class="form-group">
-                <label>Origin Country *</label>
-                <select id="originCountry">
-                    <option value="">Select</option>
-                    <option value="Indonesia">Indonesia</option>
-                    <option value="Thailand">Thailand</option>
-                    <option value="China">China</option>
-                    <option value="Japan">Japan</option>
-                    <option value="United States">United States</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Origin City *</label>
-                <input type="text" id="originCity">
-            </div>
-
-            <div class="form-group">
-                <label>Upload Date</label>
-                <div class="hash-code" id="uploadDateDisplay">Auto generated</div>
-            </div>
-
-            <div class="form-group">
-                <label>Unique Hash</label>
-                <div class="hash-code" id="hashCodeDisplay">Auto generated</div>
-            </div>
-
-            <button class="btn btn-primary" onclick="submitProduct()" style="width:100%;">
-                <i class="fas fa-save"></i> Register Product
-            </button>
 
         </div>
     </div>
 
-    <!-- ====================== QR SCANNER MODAL ====================== -->
-    <div id="qrScannerModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('qrScannerModal')">&times;</span>
-
-            <h2>QR Code Scanner</h2>
-
-            <div class="qr-scanner-container">
-                <div class="qr-placeholder">
-                    <i class="fas fa-camera"></i>
-                    <p>QR Scanner will activate here</p>
-                </div>
-
-                <div class="qr-result" id="qrResult" style="display: none;">
-                    <h4>Scanned:</h4>
-                    <div class="hash-code" id="scannedHash"></div>
-                </div>
+    <!-- STATISTICS -->
+    <div class="glass-card" id="statsSection" style="display:none;">
+        <div class="supply-chain-stats">
+            <div class="stat-card">
+                <div class="stat-number" id="statTotalProducts">0</div>
+                <div class="stat-label">Produk</div>
             </div>
-
-            <div class="actions">
-                <button class="btn btn-primary" onclick="simulateQRScan()">
-                    <i class="fas fa-qrcode"></i> Simulate QR Scan
-                </button>
+            <div class="stat-card">
+                <div class="stat-number" id="statLocations">0</div>
+                <div class="stat-label">Lokasi</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="statActivities">0</div>
+                <div class="stat-label">Aktivitas</div>
             </div>
         </div>
     </div>
 
-    <!-- JS -->
-    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-    <script src="script.js"></script>
+    <!-- RECENT ACTIVITY -->
+    <div class="glass-card recent-activities" id="activitySection" style="display:none;">
+        <h3 style="margin-bottom: 10px;">Aktivitas Terakhir</h3>
+        <div id="activityList"></div>
+    </div>
+
+</div>
+
+<!-- MODAL: ADD PRODUCT -->
+<div class="modal" id="modalAddProduct">
+    <div class="modal-content">
+        <span class="close-modal" data-close="#modalAddProduct">&times;</span>
+        <h3 style="margin-bottom:15px;">Tambah Produk Baru</h3>
+
+        <div class="form-group">
+            <label>Nama Produk</label>
+            <input type="text" id="inputName">
+        </div>
+
+        <div class="form-group">
+            <label>Asal Kota</label>
+            <input type="text" id="inputCity">
+        </div>
+
+        <div class="form-group">
+            <label>Harga (Rp)</label>
+            <input type="number" id="inputPrice">
+        </div>
+
+        <div class="form-group">
+            <label>Kuantitas</label>
+            <input type="number" id="inputQty">
+        </div>
+
+        <div class="form-group">
+            <label>Kode Hash Otomatis</label>
+            <div class="hash-code" id="hashPreview">Akan dihasilkan otomatis...</div>
+        </div>
+
+        <button class="btn btn-primary" id="btnSaveProduct">
+            <i class="fa fa-save"></i> Simpan Produk
+        </button>
+    </div>
+</div>
+
+<!-- MODAL: PRODUCT LIST -->
+<div class="modal" id="modalProductList">
+    <div class="modal-content">
+        <span class="close-modal" data-close="#modalProductList">&times;</span>
+        <h3 style="margin-bottom:15px;">Daftar Produk</h3>
+
+        <div class="products-container" id="productContainer"></div>
+    </div>
+</div>
+
+<!-- MODAL: PRODUCT DETAIL -->
+<div class="modal" id="modalProductDetail">
+    <div class="modal-content">
+        <span class="close-modal" data-close="#modalProductDetail">&times;</span>
+        <h3 style="margin-bottom:15px;">Detail Produk</h3>
+
+        <div id="productDetail"></div>
+    </div>
+</div>
+
+<!-- MODAL: SCAN QR -->
+<div class="modal" id="modalScanQR">
+    <div class="modal-content">
+        <span class="close-modal" data-close="#modalScanQR">&times;</span>
+        <h3 style="margin-bottom:15px;">Scan QR Code</h3>
+
+        <div class="qr-placeholder">
+            <i class="fa fa-camera"></i>
+            <p>Scanner belum aktif.<br>Integrasi kamera dapat ditambahkan.</p>
+        </div>
+
+        <div class="qr-result" id="qrResult" style="display:none;"></div>
+    </div>
+</div>
+
+<!-- YOUR JAVASCRIPT -->
+<script src="app.js"></script>
 
 </body>
 </html>
