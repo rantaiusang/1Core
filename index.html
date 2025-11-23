@@ -8,7 +8,7 @@
     <!-- ICONS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <!-- YOUR STYLE -->
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -25,13 +25,13 @@
         <div class="subtitle">Sistem Rantai Pasok Modern Terintegrasi</div>
     </div>
 
-    <!-- USER WELCOME (HIDDEN FIRST TIME) -->
+    <!-- USER WELCOME -->
     <div class="glass-card user-welcome" id="userSection" style="display:none;">
         <div class="avatar"><i class="fa fa-user"></i></div>
         <h3 id="welcomeUsername">Welcome</h3>
     </div>
 
-    <!-- ACTION BUTTONS -->
+    <!-- LOGIN BUTTONS -->
     <div class="glass-card actions" id="loginSection">
         <button class="btn btn-primary" id="btnLogin">
             <i class="fa fa-wallet"></i> Login Pi Wallet
@@ -52,10 +52,10 @@
         <i class="fa fa-search search-icon"></i>
     </div>
 
-    <!-- FEATURES GRID -->
+    <!-- FEATURES -->
     <div class="glass-card">
         <div class="features-grid">
-            
+
             <div class="feature-card" id="btnAddProduct">
                 <div class="feature-icon"><i class="fa fa-plus"></i></div>
                 Tambah Produk
@@ -100,68 +100,46 @@
 
 </div>
 
-<!-- MODAL: ADD PRODUCT -->
+<!-- MODALS -->
 <div class="modal" id="modalAddProduct">
     <div class="modal-content">
         <span class="close-modal" data-close="#modalAddProduct">&times;</span>
         <h3 style="margin-bottom:15px;">Tambah Produk Baru</h3>
 
-        <div class="form-group">
-            <label>Nama Produk</label>
-            <input type="text" id="inputName">
-        </div>
-
-        <div class="form-group">
-            <label>Asal Kota</label>
-            <input type="text" id="inputCity">
-        </div>
-
-        <div class="form-group">
-            <label>Harga (Rp)</label>
-            <input type="number" id="inputPrice">
-        </div>
-
-        <div class="form-group">
-            <label>Kuantitas</label>
-            <input type="number" id="inputQty">
-        </div>
+        <div class="form-group"><label>Nama Produk</label><input type="text" id="inputName"></div>
+        <div class="form-group"><label>Asal Kota</label><input type="text" id="inputCity"></div>
+        <div class="form-group"><label>Harga (Rp)</label><input type="number" id="inputPrice"></div>
+        <div class="form-group"><label>Kuantitas</label><input type="number" id="inputQty"></div>
 
         <div class="form-group">
             <label>Kode Hash Otomatis</label>
             <div class="hash-code" id="hashPreview">Akan dihasilkan otomatis...</div>
         </div>
 
-        <button class="btn btn-primary" id="btnSaveProduct">
-            <i class="fa fa-save"></i> Simpan Produk
-        </button>
+        <button class="btn btn-primary" id="btnSaveProduct"><i class="fa fa-save"></i> Simpan Produk</button>
     </div>
 </div>
 
-<!-- MODAL: PRODUCT LIST -->
 <div class="modal" id="modalProductList">
     <div class="modal-content">
         <span class="close-modal" data-close="#modalProductList">&times;</span>
-        <h3 style="margin-bottom:15px;">Daftar Produk</h3>
-
+        <h3>Daftar Produk</h3>
         <div class="products-container" id="productContainer"></div>
     </div>
 </div>
 
-<!-- MODAL: PRODUCT DETAIL -->
 <div class="modal" id="modalProductDetail">
     <div class="modal-content">
         <span class="close-modal" data-close="#modalProductDetail">&times;</span>
-        <h3 style="margin-bottom:15px;">Detail Produk</h3>
-
+        <h3>Detail Produk</h3>
         <div id="productDetail"></div>
     </div>
 </div>
 
-<!-- MODAL: SCAN QR -->
 <div class="modal" id="modalScanQR">
     <div class="modal-content">
         <span class="close-modal" data-close="#modalScanQR">&times;</span>
-        <h3 style="margin-bottom:15px;">Scan QR Code</h3>
+        <h3>Scan QR Code</h3>
 
         <div class="qr-placeholder">
             <i class="fa fa-camera"></i>
@@ -172,7 +150,7 @@
     </div>
 </div>
 
-<!-- YOUR JAVASCRIPT -->
+<!-- JS -->
 <script src="script.js"></script>
 
 </body>
