@@ -2,291 +2,327 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PI TRACE - Supply Chain Tracking</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <!-- Pi Network SDK -->
-    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aurora Parfum | Link-in-Bio</title>
+    <meta name="description" content="Kumpulan link resmi Aurora Parfum.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --bg-dark: #020617;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --bg-card-hover: rgba(30, 41, 59, 0.9);
+            
+            /* Warna Brand (Ungu & Emas) */
+            --primary: #a855f7; 
+            --accent: #fbbf24;
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- RESET --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Background Gradient Halus */
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.15), transparent 40%),
+                linear-gradient(to bottom, #020617, #0f172a);
+            padding: 40px 20px 60px 20px;
+        }
+
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+
+        /* --- CONTAINER --- */
+        .container {
+            width: 100%;
+            max-width: 480px; /* Lebar standar bio-link */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            z-index: 1;
+        }
+
+        /* --- PROFILE HEADER --- */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 10px;
+            animation: fadeInDown 0.8s ease-out;
+            width: 100%;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 96px;
+            height: 96px;
+            margin: 0 auto 16px;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(168, 85, 247, 0.3);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+        }
+
+        .verified-badge {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            background: var(--bg-dark);
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .profile-name { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.5px; }
+        .profile-bio { color: var(--text-muted); font-size: 0.9rem; line-height: 1.4; padding: 0 10px; }
+
+        /* --- SOCIAL ICONS (KECIL DI BAWAH NAMA) --- */
+        .socials-header {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .social-icon-link {
+            color: var(--text-muted);
+            font-size: 24px;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+        .social-icon-link:hover { color: var(--primary); transform: translateY(-2px); }
+
+        /* --- LINK BUTTONS (INTI DARI LYNK.ID) --- */
+        .links-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Icon kiri, Teks Tengah, Panah Kanan */
+            width: 100%;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50px; /* Sangat bulat seperti Lynk.id */
+            text-decoration: none;
+            color: var(--text-main);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease-out backwards;
+        }
+
+        /* Hover Effect: Sedikit terangkat dan border menyala */
+        .link-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+        }
+
+        .btn-icon {
+            font-size: 22px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .btn-arrow {
+            font-size: 18px;
+            color: var(--text-muted);
+            transition: 0.3s;
+        }
+        .link-btn:hover .btn-arrow { color: var(--text-main); transform: translateX(4px); }
+        .link-btn:hover .btn-icon { color: var(--accent); }
+
+        /* --- VARIAN TOMBOL KHUSUS --- */
+
+        /* 1. Tombol Utama (Lebih menonjol) */
+        .link-btn.featured {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.05));
+            border-color: rgba(168, 85, 247, 0.5);
+        }
+        .link-btn.featured .btn-text { font-weight: 700; color: #fff; }
+        .link-btn.featured:hover {
+            background: var(--primary);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+        }
+        .link-btn.featured:hover .btn-text, 
+        .link-btn.featured:hover .btn-icon,
+        .link-btn.featured:hover .btn-arrow { color: #fff; }
+
+        /* 2. Tombol Grid (Untuk Kategori Produk) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 Kolom */
+            gap: 12px;
+            width: 100%;
+        }
+        .link-btn.grid-item {
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            padding: 20px 10px;
+            gap: 10px;
+        }
+        .link-btn.grid-item .btn-content {
+            flex-direction: column;
+            gap: 8px;
+        }
+        .link-btn.grid-item .btn-icon { font-size: 28px; }
+        .link-btn.grid-item .btn-arrow { display: none; }
+
+        /* --- FOOTER --- */
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
 </head>
 <body>
+
     <div class="container">
-        <!-- Login Section -->
-        <div id="login-section">
-            <div class="glass-card">
-                <div class="header">
-                    <div class="logo">
-                        <i class="fas fa-link"></i>
-                    </div>
-                    <h1 class="title">PI TRACE</h1>
-                    <p class="subtitle">Blockchain Supply Chain Tracking Solution</p>
-                </div>
-                
-                <h2 style="text-align: center; margin-bottom: 20px;">Welcome to PI TRACE</h2>
-                <p style="text-align: center; color: var(--gray); margin-bottom: 30px;">
-                    Track your products through the entire supply chain using blockchain technology.
-                </p>
-                
-                <div class="actions">
-                    <button class="btn btn-primary" onclick="loginWithPi()">
-                        <i class="fab fa-raspberry-pi"></i>
-                        Login with Pi Wallet
-                    </button>
-                    
-                    <button class="btn mock-login-btn" onclick="mockLogin()">
-                        <i class="fas fa-code"></i>
-                        Mock Login (For Testing)
-                    </button>
-                    
-                    <button class="btn guest-login-btn" onclick="guestLogin()">
-                        <i class="fas fa-user-clock"></i>
-                        Continue as Guest
-                    </button>
-                </div>
-
-                <div class="debug-panel" id="debugPanel">
-                    <div class="debug-item">Ready - Click any login button to start</div>
-                </div>
+        <!-- PROFILE HEADER -->
+        <header class="profile-header">
+            <div class="avatar-wrapper">
+                <!-- GANTI DENGAN LOGO ANDA -->
+                <img src="https://picsum.photos/seed/perfumeLogo/200/200" alt="Logo" class="avatar">
+                <div class="verified-badge"><i class="ph ph-check"></i></div>
             </div>
+            <h1 class="profile-name">Aurora Parfum</h1>
+            <p class="profile-bio">Koleksi parfum premium untuk pria & wanita. Tahan lama dan berkualitas.</p>
+            
+            <!-- Sosial Media Kecil -->
+            <div class="socials-header">
+                <a href="https://instagram.com" class="social-icon-link"><i class="ph ph-instagram-logo"></i></a>
+                <a href="https://tiktok.com" class="social-icon-link"><i class="ph ph-tiktok-logo"></i></a>
+                <a href="https://wa.me/6281234567890" class="social-icon-link"><i class="ph ph-whatsapp-logo"></i></a>
+            </div>
+        </header>
+
+        <!-- AREA LINK UTAMA -->
+        <div class="links-wrapper">
+            
+            <!-- Link Featured (Paling Penting) -->
+            <!-- Ganti href dengan link Toko Utama -->
+            <a href="https://shopee.co.id/tokosaya" target="_blank" class="link-btn featured" style="animation-delay: 0.1s;">
+                <div class="btn-content">
+                    <i class="ph ph-shopping-bag btn-icon"></i>
+                    <span class="btn-text">Official Store (Shopee)</span>
+                </div>
+                <i class="ph ph-arrow-right btn-arrow"></i>
+            </a>
+
+            <a href="https://tokopedia.com/tokosaya" target="_blank" class="link-btn" style="animation-delay: 0.2s;">
+                <div class="btn-content">
+                    <i class="ph ph-storefront btn-icon"></i>
+                    <span class="btn-text">Tokopedia Official</span>
+                </div>
+                <i class="ph ph-arrow-right btn-arrow"></i>
+            </a>
+
+            <a href="https://websiteproduk.com" target="_blank" class="link-btn" style="animation-delay: 0.3s;">
+                <div class="btn-content">
+                    <i class="ph ph-globe btn-icon"></i>
+                    <span class="btn-text">Website Katalog</span>
+                </div>
+                <i class="ph ph-arrow-right btn-arrow"></i>
+            </a>
         </div>
 
-        <!-- Main App Section -->
-        <div id="app-section" style="display: none;">
-            <div class="glass-card">
-                <!-- User Welcome -->
-                <div class="user-welcome">
-                    <div class="avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <h2>
-                        Welcome back, 
-                        <span id="username" style="color: var(--primary);">User</span>!
-                    </h2>
-                    <p style="color: var(--gray); margin-top: 5px;" id="login-type">
-                        Authenticated with Pi Wallet
-                    </p>
+        <!-- GRID KATEGORI (Opsional, untuk mempercepat akses produk) -->
+        <div class="grid-container" style="margin-top: 10px;">
+            <a href="#pria" class="link-btn grid-item" style="animation-delay: 0.4s;">
+                <div class="btn-content">
+                    <i class="ph ph-gender-male btn-icon"></i>
+                    <span class="btn-text">Parfum Pria</span>
                 </div>
-
-                <!-- Search Bar -->
-                <div class="search-container">
-                    <input type="text" id="searchInput" class="search-input" placeholder="Search products...">
-                    <i class="fas fa-search search-icon" onclick="searchProducts()"></i>
+            </a>
+            <a href="#wanita" class="link-btn grid-item" style="animation-delay: 0.5s;">
+                <div class="btn-content">
+                    <i class="ph ph-gender-female btn-icon"></i>
+                    <span class="btn-text">Parfum Wanita</span>
                 </div>
-
-                <!-- Features Grid -->
-                <div class="features-grid">
-                    <div class="feature-card" onclick="showProductModal()">
-                        <div class="feature-icon">
-                            <i class="fas fa-qrcode"></i>
-                        </div>
-                        <h3>QR Code Tracking</h3>
-                        <p style="color: var(--gray);">Scan QR codes to track products</p>
-                    </div>
-
-                    <div class="feature-card" onclick="showProductModal()">
-                        <div class="feature-icon">
-                            <i class="fas fa-box"></i>
-                        </div>
-                        <h3>Product Registration</h3>
-                        <p style="color: var(--gray);">Register products on blockchain</p>
-                    </div>
-
-                    <div class="feature-card" onclick="scanQRCode()">
-                        <div class="feature-icon">
-                            <i class="fas fa-shipping-fast"></i>
-                        </div>
-                        <h3>Supply Chain Monitoring</h3>
-                        <p style="color: var(--gray);">Monitor products in real-time</p>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="actions">
-                    <button class="btn btn-primary" onclick="showProductModal()">
-                        <i class="fas fa-plus-circle"></i>
-                        Register Product
-                    </button>
-                    <button class="btn btn-success" onclick="createPayment()">
-                        <i class="fas fa-coins"></i>
-                        Make Payment (3.14 π)
-                    </button>
-                    <button class="btn btn-outline" onclick="scanQRCode()">
-                        <i class="fas fa-camera"></i>
-                        Scan QR Code
-                    </button>
-                </div>
-
-                <!-- Product List -->
-                <div class="product-list" id="productList" style="display: none;">
-                    <h3 style="margin-bottom: 20px;">Your Products</h3>
-                    <div id="productsContainer"></div>
-                </div>
-
-                <!-- Logout Button -->
-                <div style="text-align: center; margin-top: 30px;">
-                    <button class="btn btn-outline" onclick="logout()">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
-                    </button>
-                </div>
-            </div>
+            </a>
         </div>
 
-        <!-- Status Messages -->
-        <div id="status" class="status"></div>
+        <!-- LINK LAINNYA -->
+        <div class="links-wrapper" style="margin-top: 10px;">
+            <a href="https://wa.me/6281234567890?text=Halo%20mau%20tanya%20stok" target="_blank" class="link-btn" style="animation-delay: 0.6s;">
+                <div class="btn-content">
+                    <i class="ph ph-whatsapp-logo btn-icon" style="color: #25D366;"></i>
+                    <span class="btn-text">Chat Admin (WA)</span>
+                </div>
+                <i class="ph ph-arrow-right btn-arrow"></i>
+            </a>
+
+            <a href="#" class="link-btn" style="animation-delay: 0.7s;">
+                <div class="btn-content">
+                    <i class="ph ph-star btn-icon" style="color: var(--accent);"></i>
+                    <span class="btn-text">Review Pelanggan</span>
+                </div>
+                <i class="ph ph-arrow-right btn-arrow"></i>
+            </a>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <p>© 2024 Aurora Parfum. All rights reserved.</p>
+        </footer>
     </div>
 
-    <!-- Product Registration Modal -->
-    <div id="productModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('productModal')">&times;</span>
-            <h2 style="margin-bottom: 20px; color: var(--dark);">Register New Product</h2>
-            
-            <div class="form-group">
-                <label for="productName">Product Name</label>
-                <input type="text" id="productName" placeholder="Enter product name">
-            </div>
-            
-            <div class="form-group">
-                <label for="productCategory">Category</label>
-                <select id="productCategory">
-                    <option value="">Select category</option>
-                    <option value="electronics">Electronics</option>
-                    <option value="clothing">Clothing</option>
-                    <option value="food">Food & Beverages</option>
-                    <option value="cosmetics">Cosmetics</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="productDescription">Description</label>
-                <textarea id="productDescription" rows="3" placeholder="Enter product description"></textarea>
-            </div>
-
-            <!-- Quantity dengan Satuan -->
-            <div class="form-group">
-                <label>Quantity</label>
-                <div class="quantity-input-group">
-                    <div class="form-group">
-                        <input type="number" id="productQuantity" min="1" value="1" placeholder="Quantity">
-                    </div>
-                    <div class="form-group">
-                        <select id="productUnit">
-                            <option value="pcs">Pieces (pcs)</option>
-                            <option value="kg">Kilograms (kg)</option>
-                            <option value="g">Grams (g)</option>
-                            <option value="lb">Pounds (lb)</option>
-                            <option value="ton">Tons (ton)</option>
-                            <option value="l">Liters (L)</option>
-                            <option value="ml">Milliliters (ml)</option>
-                            <option value="m">Meters (m)</option>
-                            <option value="cm">Centimeters (cm)</option>
-                            <option value="box">Boxes</option>
-                            <option value="pack">Packs</option>
-                            <option value="set">Sets</option>
-                            <option value="pair">Pairs</option>
-                            <option value="bundle">Bundles</option>
-                            <option value="carton">Cartons</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="productPrice">Price (π)</label>
-                <input type="number" id="productPrice" step="0.01" placeholder="0.00">
-            </div>
-
-            <div class="form-group">
-                <label for="originCountry">Origin Country</label>
-                <select id="originCountry">
-                    <option value="">Select Country</option>
-                    <option value="Indonesia">Indonesia</option>
-                    <option value="Thailand">Thailand</option>
-                    <option value="China">China</option>
-                    <option value="Japan">Japan</option>
-                    <option value="United States">United States</option>
-                    <option value="Germany">Germany</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="originCity">Origin City</label>
-                <input type="text" id="originCity" placeholder="Enter city">
-            </div>
-            
-            <div class="form-group">
-                <label>Upload Date</label>
-                <div class="hash-code" id="uploadDateDisplay">Will be generated automatically</div>
-            </div>
-            
-            <div class="form-group">
-                <label>Unique Hash Code</label>
-                <div class="hash-code" id="hashCodeDisplay">Will be generated automatically</div>
-            </div>
-            
-            <button class="btn btn-primary" onclick="submitProduct()" style="width: 100%;">
-                <i class="fas fa-save"></i> Register Product
-            </button>
-        </div>
-    </div>
-
-    <!-- Product Detail Modal -->
-    <div id="productDetailModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('productDetailModal')">&times;</span>
-            <h2 style="margin-bottom: 20px; color: var(--dark);" id="detailProductName">Product Details</h2>
-            
-            <div class="product-detail-grid">
-                <div class="detail-item">
-                    <div class="detail-label">Category</div>
-                    <div class="detail-value" id="detailCategory">-</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Quantity</div>
-                    <div class="detail-value" id="detailQuantity">-</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Price</div>
-                    <div class="detail-value" id="detailPrice">-</div>
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Origin</div>
-                    <div class="detail-value" id="detailOrigin">-</div>
-                </div>
-            </div>
-            
-            <div class="detail-item">
-                <div class="detail-label">Description</div>
-                <div class="detail-value" id="detailDescription">-</div>
-            </div>
-            
-            <div class="detail-item">
-                <div class="detail-label">Upload Date</div>
-                <div class="detail-value" id="detailUploadDate">-</div>
-            </div>
-            
-            <div class="detail-item">
-                <div class="detail-label">Hash Code</div>
-                <div class="hash-code" id="detailHashCode">-</div>
-            </div>
-            
-            <!-- Supply Chain Timeline -->
-            <div class="supply-chain-timeline">
-                <h3 style="margin: 20px 0 15px; color: var(--dark);">Supply Chain Timeline</h3>
-                <div id="supplyChainTimeline">
-                    <!-- Timeline items will be added here dynamically -->
-                </div>
-            </div>
-            
-            <button class="btn btn-outline" onclick="closeModal('productDetailModal')" style="width: 100%; margin-top: 20px;">
-                <i class="fas fa-times"></i> Close
-            </button>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
 </body>
 </html>
