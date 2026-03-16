@@ -8,24 +8,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* STANDARD STYLE */
+        /* --- VARIABLES & RESET --- */
         :root { --gold: #c5a059; --dark: #0f0c15; --card: #161216; --gray: #a0a0a0; --white: #ffffff; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background: var(--dark); color: var(--white); }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; background: var(--dark); color: var(--white); overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
 
-        /* HEADER */
+        /* --- HEADER --- */
         header { position: fixed; top: 0; width: 100%; z-index: 100; padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 12, 21, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         
-        .logo { font-family: 'Playfair Display'; font-size: 1.8rem; color: var(--white); text-decoration: none; } 
+        .logo { font-family: 'Playfair Display'; font-size: 1.8rem; color: var(--white); } 
         .logo span { color: var(--gold); }
 
         /* NAV DESKTOP */
         .nav-links { display: flex; gap: 35px; align-items: center; }
-        .nav-links a { color: var(--gray); font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; text-decoration: none; }
+        .nav-links a { color: var(--gray); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--gold); }
         .btn-nav { padding: 10px 25px; background: var(--gold); color: #000; border-radius: 30px; font-weight: 600; }
 
-        /* NAV MOBILE (HAMBURGER) */
+        /* NAV MOBILE */
         .hamburger { display: none; font-size: 1.5rem; color: var(--white); cursor: pointer; z-index: 150; }
         .mobile-menu { display: none; position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: #0a080c; flex-direction: column; padding: 80px 30px 30px; gap: 25px; transition: 0.4s ease; z-index: 140; border-left: 1px solid rgba(255,255,255,0.1); }
         .mobile-menu a { color: var(--white); text-decoration: none; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
@@ -33,35 +34,57 @@
         .mobile-menu.open { right: 0; }
         .overlay-bg { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 130; }
 
-        /* CONTACT SPECIFIC */
-        .contact-container { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; padding: 150px 5% 80px; max-width: 1200px; margin: 0 auto; }
-        .contact-info h2 { font-family: 'Playfair Display'; font-size: 2.5rem; margin-bottom: 20px; }
-        .contact-info p { color: var(--gray); margin-bottom: 30px; }
+        /* --- PAGE HERO --- */
+        .page-hero { height: 35vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 80px; background: linear-gradient(to bottom, #1a161d, var(--dark)); }
+        .page-hero h1 { font-family: 'Playfair Display'; font-size: 3.5rem; color: var(--gold); opacity: 0; animation: fadeInUp 1s ease forwards; }
+        .page-hero p { color: var(--gray); margin-top: 10px; opacity: 0; animation: fadeInUp 1s ease 0.3s forwards; }
+
+        /* --- CONTACT LAYOUT --- */
+        .contact-section { padding: 80px 5%; max-width: 1200px; margin: 0 auto; }
         
-        .info-box { margin-bottom: 25px; display: flex; align-items: flex-start; gap: 15px; }
-        .info-box i { color: var(--gold); margin-top: 5px; font-size: 1.2rem; width: 20px; text-align: center; }
-        .info-box div { display: flex; flex-direction: column; }
-        .info-box span.label { font-size: 0.8rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
-        .info-box a, .info-box span { color: #ccc; text-decoration: none; transition: 0.3s; font-size: 1rem; }
-        .info-box a:hover { color: var(--gold); }
+        /* Layout 2 Kolom Desktop */
+        .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: start; opacity: 0; animation: fadeInUp 1s ease 0.5s forwards; }
+        
+        /* Info Box Styling */
+        .info-card { background: var(--card); padding: 30px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 25px; transition: transform 0.3s; }
+        .info-card:hover { transform: translateY(-5px); border-color: rgba(197, 160, 89, 0.3); }
+        
+        .info-card h3 { font-family: 'Playfair Display'; font-size: 1.5rem; margin-bottom: 20px; color: var(--white); border-left: 3px solid var(--gold); padding-left: 15px; }
+        
+        .info-item { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px; }
+        .info-item:last-child { margin-bottom: 0; }
+        .info-item i { color: var(--gold); font-size: 1.1rem; margin-top: 3px; width: 20px; text-align: center; }
+        .info-item div h4 { font-size: 0.85rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: 400; }
+        .info-item div p, .info-item div a { color: #ccc; font-size: 0.95rem; line-height: 1.5; transition: 0.3s; }
+        .info-item div a:hover { color: var(--gold); }
 
         /* Form Styling */
-        .contact-form input, .contact-form textarea {
-            width: 100%; padding: 15px; margin-bottom: 20px;
-            background: var(--card); border: 1px solid rgba(255,255,255,0.1);
-            color: #fff; border-radius: 5px; font-family: 'Poppins'; transition: 0.3s;
-        }
-        .contact-form input:focus, .contact-form textarea:focus { border-color: var(--gold); outline: none; }
-        .contact-form button { background: var(--gold); color: #000; padding: 15px 40px; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s; width: 100%; font-size: 1rem; }
-        .contact-form button:hover { background: #fff; }
+        .contact-form-box { background: var(--card); padding: 40px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
+        .contact-form-box h2 { font-family: 'Playfair Display'; font-size: 1.8rem; margin-bottom: 25px; }
         
-        /* STATUS MESSAGE */
-        #status_msg { text-align: center; margin-bottom: 20px; padding: 10px; border-radius: 5px; display: none; }
-        .success { background: rgba(0, 128, 0, 0.2); color: #00ff00; border: 1px solid #00ff00; }
-        .error { background: rgba(255, 0, 0, 0.2); color: #ff4444; border: 1px solid #ff4444; }
+        .input-group { margin-bottom: 20px; position: relative; }
+        .input-group input, .input-group textarea {
+            width: 100%; padding: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; border-radius: 5px; font-family: 'Poppins'; transition: 0.3s; font-size: 0.95rem;
+        }
+        .input-group input:focus, .input-group textarea:focus { border-color: var(--gold); background: rgba(0,0,0,0.3); outline: none; box-shadow: 0 0 10px rgba(197, 160, 89, 0.1); }
+        .input-group textarea { resize: vertical; min-height: 120px; }
 
-        footer { background: #0a080c; padding: 30px 5%; text-align: center; margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .btn-submit { background: var(--gold); color: #000; padding: 15px 40px; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s; width: 100%; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-submit:hover { background: #fff; box-shadow: 0 5px 20px rgba(197, 160, 89, 0.3); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* Status Msg */
+        #status_msg { text-align: center; margin-bottom: 20px; padding: 12px; border-radius: 5px; display: none; font-size: 0.9rem; }
+        .success { background: rgba(0, 128, 0, 0.15); color: #4caf50; border: 1px solid rgba(76, 175, 80, 0.3); }
+        .error { background: rgba(255, 0, 0, 0.1); color: #f44336; border: 1px solid rgba(244, 67, 54, 0.3); }
+
+        /* FOOTER */
+        footer { background: #0a080c; padding: 30px 5%; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px; }
         footer p { color: #555; font-size: 0.8rem; }
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- RESPONSIVE MOBILE --- */
         @media (max-width: 768px) {
@@ -71,10 +94,21 @@
             .hamburger { display: block; }
             .mobile-menu { display: flex; }
 
-            .contact-container { grid-template-columns: 1fr; padding: 120px 4% 60px; gap: 40px; }
-            .contact-info h2 { font-size: 2rem; }
-            .contact-info { order: 2; } /* Info kontak di bawah form di mobile (opsional, sesuaikan kebutuhan) */
-            .contact-form { order: 1; } /* Form di atas */
+            .page-hero { height: 30vh; padding-top: 60px; }
+            .page-hero h1 { font-size: 2.5rem; }
+            
+            .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+            .contact-form-box { padding: 25px; }
+            
+            /* Membuat info kontak menjadi grid 2 kolom di mobile agar tidak panjang sekali */
+            .info-grid-mobile { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+            .info-card { margin-bottom: 0; padding: 20px; } /* Reset margin bawah */
+            .info-card h3 { font-size: 1.2rem; margin-bottom: 15px; }
+            
+            /* Jika layar sangat kecil, kembali ke 1 kolom */
+            @media (max-width: 480px) {
+                .info-grid-mobile { grid-template-columns: 1fr; }
+            }
         }
     </style>
 </head>
@@ -83,8 +117,6 @@
     <!-- HEADER -->
     <header>
         <a href="index.html" class="logo">1 <span>Core</span></a>
-        
-        <!-- Nav Desktop -->
         <nav class="nav-links">
             <a href="index.html">Beranda</a>
             <a href="about.html">Tentang</a>
@@ -93,14 +125,12 @@
             <a href="gallery.html">Galeri</a>
             <a href="contact.html" class="btn-nav active">Hubungi Kami</a>
         </nav>
-
-        <!-- Hamburger Icon -->
         <div class="hamburger" onclick="toggleMenu()">
             <i class="fas fa-bars" id="menuIcon"></i>
         </div>
     </header>
 
-    <!-- Mobile Menu Sidebar -->
+    <!-- Mobile Menu -->
     <div class="overlay-bg" id="overlayBg" onclick="toggleMenu()"></div>
     <nav class="mobile-menu" id="mobileMenu">
         <a href="index.html">Beranda</a>
@@ -111,62 +141,98 @@
         <a href="contact.html" class="active">Hubungi Kami</a>
     </nav>
 
+    <!-- HERO PAGE -->
+    <section class="page-hero">
+        <div>
+            <h1>Hubungi Kami</h1>
+            <p>Let's create something amazing together.</p>
+        </div>
+    </section>
+
     <!-- CONTENT -->
-    <div class="contact-container">
-        <div class="contact-info">
-            <h2>Hubungi <span style="color:var(--gold)">Kami</span></h2>
-            <p>Punya proyek baru? Hubungi kami untuk konsultasi desain impian Anda.</p>
+    <section class="contact-section">
+        <div class="contact-grid">
             
-            <div class="info-box">
-                <i class="fas fa-map-marker-alt"></i>
-                <div>
-                    <span class="label">Alamat Studio</span>
-                    <span>Dukuh Glodeg, Wagir Lor, Ngebel, Ponorogo</span>
+            <!-- KIRI: INFO KONTAK -->
+            <div class="contact-info">
+                <div class="info-grid-mobile">
+                    <!-- Card Alamat -->
+                    <div class="info-card">
+                        <h3>Studio</h3>
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h4>Alamat</h4>
+                                <p>Dukuh Glodeg, Wagir Lor, Ngebel, Ponorogo</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Kontak -->
+                    <div class="info-card">
+                        <h3>Kontak</h3>
+                        <div class="info-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>Email</h4>
+                                <a href="mailto:hello@1core-design.id">hello@1core-design.id</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Team (Full Width) -->
+                <div class="info-card">
+                    <h3>Tim Kami</h3>
+                    <div class="info-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <div>
+                            <h4>Founder</h4>
+                            <a href="https://wa.me/628133039866?text=Halo%201%20Core" target="_blank">0813 3039 866</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <div>
+                            <h4>Co-Founder</h4>
+                            <a href="https://wa.me/628133138334?text=Halo%201%20Core" target="_blank">0813 3138 334</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                 <div style="margin-top: 20px;">
+                    <h4 style="color:var(--gray); font-weight:400; margin-bottom:15px; text-transform:uppercase; font-size:0.8rem;">Ikuti Kami</h4>
+                    <div style="display: flex; gap: 15px;">
+                        <a href="#" style="color: var(--white); font-size: 1.2rem; background:var(--card); width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1px solid rgba(255,255,255,0.1); transition:0.3s;"><i class="fab fa-instagram"></i></a>
+                        <a href="#" style="color: var(--white); font-size: 1.2rem; background:var(--card); width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1px solid rgba(255,255,255,0.1); transition:0.3s;"><i class="fab fa-linkedin"></i></a>
+                    </div>
                 </div>
             </div>
 
-            <div class="info-box">
-                <i class="fas fa-envelope"></i>
-                <div>
-                    <span class="label">Email</span>
-                    <a href="mailto:hello@1core-design.id">hello@1core-design.id</a>
-                </div>
+            <!-- KANAN: FORM -->
+            <div class="contact-form-box">
+                <h2>Kirim Pesan</h2>
+                <div id="status_msg"></div>
+                <form id="contactForm">
+                    <div class="input-group">
+                        <input type="text" name="name" id="name" placeholder="Nama Lengkap Anda" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" name="email" id="email" placeholder="Alamat Email Anda" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="subject" id="subject" placeholder="Subjek (cth: Desain Rumah)">
+                    </div>
+                    <div class="input-group">
+                        <textarea id="message" placeholder="Ceritakan kebutuhan desain Anda..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit" id="submitBtn">Kirim Pesan</button>
+                </form>
             </div>
 
-            <div class="info-box">
-                <i class="fab fa-whatsapp"></i>
-                <div>
-                    <span class="label">Founder</span>
-                    <a href="https://wa.me/628133039866?text=Halo%201%20Core,%20saya%20ingin%20konsultasi%20proyek" target="_blank">0813 3039 866</a>
-                </div>
-            </div>
-
-            <div class="info-box">
-                <i class="fab fa-whatsapp"></i>
-                <div>
-                    <span class="label">Co-Founder</span>
-                    <a href="https://wa.me/628133138334?text=Halo%201%20Core,%20saya%20ingin%20konsultasi%20proyek" target="_blank">0813 3138 334</a>
-                </div>
-            </div>
-            
-            <div style="margin-top: 40px; display: flex; gap: 15px;">
-                <a href="#" style="color: var(--gold); font-size: 1.5rem;"><i class="fab fa-instagram"></i></a>
-                <a href="#" style="color: var(--gold); font-size: 1.5rem;"><i class="fab fa-linkedin"></i></a>
-            </div>
         </div>
-
-        <div class="contact-form">
-            <div id="status_msg"></div>
-
-            <form id="contactForm">
-                <input type="text" name="name" id="name" placeholder="Nama Lengkap Anda" required>
-                <input type="email" name="email" id="email" placeholder="Alamat Email Anda" required>
-                <input type="text" name="subject" id="subject" placeholder="Subjek (cth: Desain Rumah)">
-                <textarea rows="5" name="message" id="message" placeholder="Ceritakan kebutuhan desain Anda..." required></textarea>
-                <button type="submit" id="submitBtn">Kirim Pesan</button>
-            </form>
-        </div>
-    </div>
+    </section>
 
     <footer><p>&copy; 2024 1 Core Interior Design Studio.</p></footer>
 
@@ -183,17 +249,13 @@
             menu.classList.toggle('open');
             overlay.style.display = menu.classList.contains('open') ? 'block' : 'none';
             
-            if (menu.classList.contains('open')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            }
+            // Ganti ikon
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
         }
 
         // --- EMAILJS CONFIG ---
-        // Ganti 'YOUR_PUBLIC_KEY' dengan Public Key dari akun EmailJS Anda
+        // PENTING: Ganti "YOUR_PUBLIC_KEY" dengan Public Key dari dashboard EmailJS Anda
         (function(){
             emailjs.init("YOUR_PUBLIC_KEY"); 
         })();
@@ -205,9 +267,9 @@
             const btn = document.getElementById('submitBtn');
             const statusMsg = document.getElementById('status_msg');
 
+            // UI Loading State
             btn.innerText = 'Mengirim...';
             btn.disabled = true;
-            btn.style.opacity = '0.7';
 
             const templateParams = {
                 from_name: document.getElementById('name').value,
@@ -216,9 +278,10 @@
                 message: document.getElementById('message').value
             };
 
-            // Ganti 'YOUR_SERVICE_ID' dan 'YOUR_TEMPLATE_ID' dengan ID dari EmailJS
+            // PENTING: Ganti 'YOUR_SERVICE_ID' dan 'YOUR_TEMPLATE_ID'
             emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
                 .then(function() {
+                    // Sukses
                     statusMsg.style.display = 'block';
                     statusMsg.className = 'success';
                     statusMsg.innerText = 'Pesan berhasil terkirim! Kami akan segera menghubungi Anda.';
@@ -226,15 +289,14 @@
                     document.getElementById('contactForm').reset();
                     btn.innerText = 'Kirim Pesan';
                     btn.disabled = false;
-                    btn.style.opacity = '1';
                 }, function(error) {
+                    // Gagal
                     statusMsg.style.display = 'block';
                     statusMsg.className = 'error';
-                    statusMsg.innerText = 'Gagal mengirim pesan. Silakan coba lagi atau hubungi via WhatsApp.';
+                    statusMsg.innerText = 'Gagal mengirim. Silakan coba lagi atau hubungi via WhatsApp.';
                     console.log('FAILED...', error);
                     btn.innerText = 'Kirim Pesan';
                     btn.disabled = false;
-                    btn.style.opacity = '1';
                 });
         });
     </script>
