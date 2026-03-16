@@ -12,10 +12,13 @@
         :root { --gold: #c5a059; --dark: #0f0c15; --card: #161216; --gray: #a0a0a0; --white: #ffffff; }
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
         body { font-family: 'Poppins', sans-serif; background: var(--dark); color: var(--white); }
+        
+        /* HEADER */
         header { position: fixed; top: 0; width: 100%; z-index: 100; padding: 20px 8%; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 12, 21, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .logo { font-family: 'Playfair Display'; font-size: 1.8rem; color: var(--white); } .logo span { color: var(--gold); }
+        .logo { font-family: 'Playfair Display'; font-size: 1.8rem; color: var(--white); text-decoration: none; } 
+        .logo span { color: var(--gold); }
         .nav-links { display: flex; gap: 35px; align-items: center; }
-        .nav-links a { color: var(--gray); font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; }
+        .nav-links a { color: var(--gray); font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; text-decoration: none; }
         .nav-links a:hover, .nav-links a.active { color: var(--gold); }
         .btn-nav { padding: 10px 25px; background: var(--gold); color: #000; border-radius: 30px; font-weight: 600; }
 
@@ -32,7 +35,8 @@
         .project-item:hover .project-info { opacity: 1; transform: translateY(0); }
         .project-info h3 { font-family: 'Playfair Display'; font-size: 1.8rem; color: var(--gold); }
         
-        footer { background: #0a080c; padding: 30px 8%; text-align: center; margin-top: 50px; }
+        /* FOOTER */
+        footer { background: #0a080c; padding: 30px 8%; text-align: center; margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.05); }
         footer p { color: #555; font-size: 0.8rem; }
     </style>
 </head>
@@ -42,15 +46,18 @@
     <header>
         <a href="index.html" class="logo">1 <span>Core</span></a>
         <nav class="nav-links">
+            <!-- MENU DIPERBARUI: Tambahan Beranda & Galeri -->
+            <a href="index.html">Beranda</a>
             <a href="about.html">Tentang</a>
             <a href="services.html">Layanan</a>
             <a href="portfolio.html" class="active">Portofolio</a>
+            <a href="gallery.html">Galeri</a>
             <a href="contact.html" class="btn-nav">Hubungi Kami</a>
         </nav>
     </header>
 
     <!-- HERO -->
-    <section class="page-hero"><h1>Karya Pilihan</h1></section>
+    <section class="page-hero"><h1>Portofolio Kami</h1></section>
 
     <!-- CONTENT -->
     <section class="portfolio-section">
