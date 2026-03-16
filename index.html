@@ -2,327 +2,210 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aurora Parfum | Link-in-Bio</title>
-    <meta name="description" content="Kumpulan link resmi Aurora Parfum.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1 Core - Studio Desain Interior</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-
-    <!-- Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
     <style>
-        /* --- CSS VARIABLES --- */
+        /* --- CSS VARIABLES & RESET --- */
         :root {
-            --bg-dark: #020617;
-            --bg-card: rgba(15, 23, 42, 0.6);
-            --bg-card-hover: rgba(30, 41, 59, 0.9);
-            
-            /* Warna Brand (Ungu & Emas) */
-            --primary: #a855f7; 
-            --accent: #fbbf24;
-            
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: rgba(255, 255, 255, 0.1);
+            --gold: #c5a059; --dark: #0f0c15; --card: #161216; --gray: #a0a0a0; --white: #ffffff;
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; background: var(--dark); color: var(--white); overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
 
-        /* --- RESET --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* --- HEADER --- */
+        header {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            padding: 20px 8%; display: flex; justify-content: space-between; align-items: center;
+            background: transparent; transition: 0.4s;
+        }
+        header.scrolled { 
+            background: rgba(15, 12, 21, 0.95); backdrop-filter: blur(10px); 
+            padding: 15px 8%; border-bottom: 1px solid rgba(255,255,255,0.05); 
+        }
         
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* Background Gradient Halus */
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.15), transparent 40%),
-                linear-gradient(to bottom, #020617, #0f172a);
-            padding: 40px 20px 60px 20px;
-        }
+        .logo { font-family: 'Playfair Display'; font-size: 1.8rem; color: var(--white); z-index: 10; }
+        .logo span { color: var(--gold); }
 
-        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+        .nav-container { display: flex; align-items: center; gap: 20px; }
+        
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { 
+            color: var(--gray); font-size: 0.85rem; text-transform: uppercase; 
+            letter-spacing: 1px; transition: 0.3s; position: relative; padding-bottom: 5px;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+        
+        /* Garis bawah animasi saat hover */
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px;
+            background: var(--gold); transition: 0.3s;
+        }
+        .nav-links a:hover::after { width: 100%; }
 
-        /* --- CONTAINER --- */
-        .container {
-            width: 100%;
-            max-width: 480px; /* Lebar standar bio-link */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            z-index: 1;
+        .btn-nav { 
+            padding: 10px 25px; background: var(--gold); color: #000; 
+            border-radius: 30px; font-weight: 600; transition: 0.3s; 
         }
+        .btn-nav:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(197,160,89,0.3); }
 
-        /* --- PROFILE HEADER --- */
-        .profile-header {
-            text-align: center;
-            margin-bottom: 10px;
-            animation: fadeInDown 0.8s ease-out;
-            width: 100%;
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh; display: flex; align-items: center; justify-content: center;
+            position: relative; text-align: center;
         }
+        .hero-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=2000') center/cover;
+            opacity: 0.4; transform: scale(1.1); animation: zoomBg 20s infinite alternate;
+        }
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(15,12,21,0.3), var(--dark)); }
+        .hero-content { position: relative; z-index: 10; }
+        
+        .hero-subtitle { font-size: 0.9rem; letter-spacing: 5px; color: var(--gold); margin-bottom: 20px; opacity: 0; animation: fadeInUp 1s ease 0.5s forwards; }
+        .hero-title { font-family: 'Playfair Display'; font-size: 5rem; line-height: 1.1; margin-bottom: 20px; }
+        .hero-title .line { display: block; overflow: hidden; }
+        .hero-title .line span { display: inline-block; transform: translateY(100%); animation: slideUp 0.8s ease forwards; }
+        .hero-title .line:nth-child(2) span { animation-delay: 0.2s; }
+        .hero-desc { max-width: 600px; margin: 0 auto 40px; color: #ccc; opacity: 0; animation: fadeInUp 1s ease 1s forwards; }
+        .hero-btn { opacity: 0; animation: fadeInUp 1s ease 1.2s forwards; }
+        .btn-main { padding: 15px 40px; background: var(--gold); color: #000; font-weight: 600; border-radius: 30px; display: inline-block; transition: 0.3s; box-shadow: 0 0 20px rgba(197,160,89,0.3); }
+        .btn-main:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(197,160,89,0.4); }
 
-        .avatar-wrapper {
-            position: relative;
-            width: 96px;
-            height: 96px;
-            margin: 0 auto 16px;
-        }
+        /* --- SECTIONS GLOBAL --- */
+        section { padding: 100px 8%; }
+        .section-title { text-align: center; margin-bottom: 60px; opacity: 0; transform: translateY(30px); transition: 1s; }
+        .section-title.active { opacity: 1; transform: translateY(0); }
+        .section-title h2 { font-family: 'Playfair Display'; font-size: 3rem; margin-bottom: 10px; }
+        .section-title h2 span { color: var(--gold); }
+        .divider { width: 60px; height: 3px; background: var(--gold); margin: 15px auto; }
 
-        .avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(168, 85, 247, 0.3);
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+        /* --- HOME PREVIEW GRID --- */
+        .preview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .preview-card { position: relative; height: 400px; border-radius: 10px; overflow: hidden; opacity: 0; transform: translateY(50px); transition: 0.8s; }
+        .preview-card.active { opacity: 1; transform: translateY(0); }
+        .preview-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; filter: brightness(0.8); }
+        .preview-card:hover img { transform: scale(1.1); filter: brightness(0.4); }
+        
+        /* Overlay khusus card */
+        .preview-card .card-overlay { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); 
+            opacity: 0; transition: 0.4s; 
         }
-
-        .verified-badge {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            background: var(--bg-dark);
-            border: 2px solid var(--accent);
-            color: var(--accent);
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-        }
-
-        .profile-name { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.5px; }
-        .profile-bio { color: var(--text-muted); font-size: 0.9rem; line-height: 1.4; padding: 0 10px; }
-
-        /* --- SOCIAL ICONS (KECIL DI BAWAH NAMA) --- */
-        .socials-header {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-        .social-icon-link {
-            color: var(--text-muted);
-            font-size: 24px;
-            transition: 0.3s;
-            text-decoration: none;
-        }
-        .social-icon-link:hover { color: var(--primary); transform: translateY(-2px); }
-
-        /* --- LINK BUTTONS (INTI DARI LYNK.ID) --- */
-        .links-wrapper {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .link-btn {
-            display: flex;
-            align-items: center;
-            justify-content: space-between; /* Icon kiri, Teks Tengah, Panah Kanan */
-            width: 100%;
-            padding: 16px 20px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 50px; /* Sangat bulat seperti Lynk.id */
-            text-decoration: none;
-            color: var(--text-main);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-            overflow: hidden;
-            animation: fadeInUp 0.5s ease-out backwards;
-        }
-
-        /* Hover Effect: Sedikit terangkat dan border menyala */
-        .link-btn:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--primary);
-            transform: scale(1.02);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .btn-content {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex: 1;
-        }
-
-        .btn-icon {
-            font-size: 22px;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-        }
-
-        .btn-text {
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        .btn-arrow {
-            font-size: 18px;
-            color: var(--text-muted);
-            transition: 0.3s;
-        }
-        .link-btn:hover .btn-arrow { color: var(--text-main); transform: translateX(4px); }
-        .link-btn:hover .btn-icon { color: var(--accent); }
-
-        /* --- VARIAN TOMBOL KHUSUS --- */
-
-        /* 1. Tombol Utama (Lebih menonjol) */
-        .link-btn.featured {
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.05));
-            border-color: rgba(168, 85, 247, 0.5);
-        }
-        .link-btn.featured .btn-text { font-weight: 700; color: #fff; }
-        .link-btn.featured:hover {
-            background: var(--primary);
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
-        }
-        .link-btn.featured:hover .btn-text, 
-        .link-btn.featured:hover .btn-icon,
-        .link-btn.featured:hover .btn-arrow { color: #fff; }
-
-        /* 2. Tombol Grid (Untuk Kategori Produk) */
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* 2 Kolom */
-            gap: 12px;
-            width: 100%;
-        }
-        .link-btn.grid-item {
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
-            padding: 20px 10px;
-            gap: 10px;
-        }
-        .link-btn.grid-item .btn-content {
-            flex-direction: column;
-            gap: 8px;
-        }
-        .link-btn.grid-item .btn-icon { font-size: 28px; }
-        .link-btn.grid-item .btn-arrow { display: none; }
+        .preview-card:hover .card-overlay { opacity: 1; }
+        
+        .card-info { position: absolute; bottom: 30px; left: 30px; transform: translateY(20px); transition: 0.4s; opacity: 0; z-index: 2; }
+        .preview-card:hover .card-info { transform: translateY(0); opacity: 1; }
+        .card-info h3 { font-family: 'Playfair Display'; font-size: 1.5rem; margin-bottom: 5px; }
 
         /* --- FOOTER --- */
-        .footer {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
+        footer { background: #0a080c; padding: 30px 8%; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
+        footer p { color: #555; font-size: 0.8rem; }
 
         /* --- ANIMATIONS --- */
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { to { transform: translateY(0); } }
+        @keyframes zoomBg { to { transform: scale(1); } }
 
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .nav-links a { display: none; } /* Sembunyikan text link di mobile */
+            .btn-nav { display: inline-block; } /* Pertahankan tombol contact */
+            .hero-title { font-size: 3rem; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- PROFILE HEADER -->
-        <header class="profile-header">
-            <div class="avatar-wrapper">
-                <!-- GANTI DENGAN LOGO ANDA -->
-                <img src="https://picsum.photos/seed/perfumeLogo/200/200" alt="Logo" class="avatar">
-                <div class="verified-badge"><i class="ph ph-check"></i></div>
+    <!-- HEADER -->
+    <header id="header">
+        <a href="index.html" class="logo">1 <span>Core</span></a>
+        
+        <div class="nav-container">
+            <nav class="nav-links">
+                <!-- Menu Diperbarui Sesuai Folder -->
+                <a href="about.html">Tentang</a>
+                <a href="services.html">Layanan</a>
+                <a href="design.html">Desain</a>
+                <a href="gallery.html">Galeri</a>
+                <a href="partners.html">Partner</a>
+                <a href="contact.html" class="btn-nav">Hubungi Kami</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <p class="hero-subtitle">Studio Desain Interior</p>
+            <h1 class="hero-title">
+                <div class="line"><span>Mendesain</span></div>
+                <div class="line"><span>Inti Ruang Anda</span></div>
+            </h1>
+            <p class="hero-desc">Kami mengubah ruang kosong menjadi kanvas kehidupan yang fungsional dan estetis.</p>
+            <div class="hero-btn">
+                <a href="gallery.html" class="btn-main">Lihat Portfolio</a>
             </div>
-            <h1 class="profile-name">Aurora Parfum</h1>
-            <p class="profile-bio">Koleksi parfum premium untuk pria & wanita. Tahan lama dan berkualitas.</p>
-            
-            <!-- Sosial Media Kecil -->
-            <div class="socials-header">
-                <a href="https://instagram.com" class="social-icon-link"><i class="ph ph-instagram-logo"></i></a>
-                <a href="https://tiktok.com" class="social-icon-link"><i class="ph ph-tiktok-logo"></i></a>
-                <a href="https://wa.me/6281234567890" class="social-icon-link"><i class="ph ph-whatsapp-logo"></i></a>
+        </div>
+    </section>
+
+    <!-- PREVIEW SECTION -->
+    <section>
+        <div class="section-title">
+            <h2>Karya <span>Unggulan</span></h2>
+            <div class="divider"></div>
+        </div>
+        <div class="preview-grid">
+            <div class="preview-card">
+                <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=800" alt="Proyek 1">
+                <div class="card-overlay"></div>
+                <div class="card-info">
+                    <h3>Rumah Modern</h3>
+                    <p style="color: var(--gold); font-size: 0.8rem;">Residensial</p>
+                </div>
             </div>
-        </header>
-
-        <!-- AREA LINK UTAMA -->
-        <div class="links-wrapper">
-            
-            <!-- Link Featured (Paling Penting) -->
-            <!-- Ganti href dengan link Toko Utama -->
-            <a href="https://shopee.co.id/tokosaya" target="_blank" class="link-btn featured" style="animation-delay: 0.1s;">
-                <div class="btn-content">
-                    <i class="ph ph-shopping-bag btn-icon"></i>
-                    <span class="btn-text">Official Store (Shopee)</span>
+            <div class="preview-card">
+                <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=800" alt="Proyek 2">
+                <div class="card-overlay"></div>
+                <div class="card-info">
+                    <h3>Kafe Artisan</h3>
+                    <p style="color: var(--gold); font-size: 0.8rem;">Komersial</p>
                 </div>
-                <i class="ph ph-arrow-right btn-arrow"></i>
-            </a>
-
-            <a href="https://tokopedia.com/tokosaya" target="_blank" class="link-btn" style="animation-delay: 0.2s;">
-                <div class="btn-content">
-                    <i class="ph ph-storefront btn-icon"></i>
-                    <span class="btn-text">Tokopedia Official</span>
-                </div>
-                <i class="ph ph-arrow-right btn-arrow"></i>
-            </a>
-
-            <a href="https://websiteproduk.com" target="_blank" class="link-btn" style="animation-delay: 0.3s;">
-                <div class="btn-content">
-                    <i class="ph ph-globe btn-icon"></i>
-                    <span class="btn-text">Website Katalog</span>
-                </div>
-                <i class="ph ph-arrow-right btn-arrow"></i>
-            </a>
+            </div>
         </div>
+    </section>
 
-        <!-- GRID KATEGORI (Opsional, untuk mempercepat akses produk) -->
-        <div class="grid-container" style="margin-top: 10px;">
-            <a href="#pria" class="link-btn grid-item" style="animation-delay: 0.4s;">
-                <div class="btn-content">
-                    <i class="ph ph-gender-male btn-icon"></i>
-                    <span class="btn-text">Parfum Pria</span>
-                </div>
-            </a>
-            <a href="#wanita" class="link-btn grid-item" style="animation-delay: 0.5s;">
-                <div class="btn-content">
-                    <i class="ph ph-gender-female btn-icon"></i>
-                    <span class="btn-text">Parfum Wanita</span>
-                </div>
-            </a>
-        </div>
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2024 1 Core Interior Design Studio. Seluruh Hak Dilindungi.</p>
+    </footer>
 
-        <!-- LINK LAINNYA -->
-        <div class="links-wrapper" style="margin-top: 10px;">
-            <a href="https://wa.me/6281234567890?text=Halo%20mau%20tanya%20stok" target="_blank" class="link-btn" style="animation-delay: 0.6s;">
-                <div class="btn-content">
-                    <i class="ph ph-whatsapp-logo btn-icon" style="color: #25D366;"></i>
-                    <span class="btn-text">Chat Admin (WA)</span>
-                </div>
-                <i class="ph ph-arrow-right btn-arrow"></i>
-            </a>
+    <!-- SCRIPT -->
+    <script>
+        // 1. Efek Scroll Header
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 100) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+        });
 
-            <a href="#" class="link-btn" style="animation-delay: 0.7s;">
-                <div class="btn-content">
-                    <i class="ph ph-star btn-icon" style="color: var(--accent);"></i>
-                    <span class="btn-text">Review Pelanggan</span>
-                </div>
-                <i class="ph ph-arrow-right btn-arrow"></i>
-            </a>
-        </div>
-
-        <!-- FOOTER -->
-        <footer class="footer">
-            <p>© 2024 Aurora Parfum. All rights reserved.</p>
-        </footer>
-    </div>
-
+        // 2. Animasi Saat Scroll
+        const reveals = document.querySelectorAll('.section-title, .preview-card');
+        const revealOnScroll = () => {
+            reveals.forEach(el => {
+                const top = el.getBoundingClientRect().top;
+                if (top < window.innerHeight - 100) el.classList.add('active');
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Cek awal
+    </script>
 </body>
 </html>
