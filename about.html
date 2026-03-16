@@ -16,32 +16,59 @@
         a { text-decoration: none; color: inherit; }
 
         /* --- HEADER --- */
-        header { position: fixed; top: 0; width: 100%; z-index: 100; padding: 20px 8%; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 12, 21, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .logo { font-family: 'Playfair Display'; font-size: 1.8rem; color: var(--white); } .logo span { color: var(--gold); }
+        header { position: fixed; top: 0; width: 100%; z-index: 100; padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 12, 21, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .logo { font-family: 'Playfair Display'; font-size: 1.8rem; color: var(--white); } 
+        .logo span { color: var(--gold); }
+
+        /* NAV DESKTOP */
         .nav-links { display: flex; gap: 35px; align-items: center; }
         .nav-links a { color: var(--gray); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--gold); }
         .btn-nav { padding: 10px 25px; background: var(--gold); color: #000; border-radius: 30px; font-weight: 600; }
 
+        /* NAV MOBILE (HAMBURGER) */
+        .hamburger { display: none; font-size: 1.5rem; color: var(--white); cursor: pointer; z-index: 150; }
+        .mobile-menu { display: none; position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: #0a080c; flex-direction: column; padding: 80px 30px 30px; gap: 25px; transition: 0.4s ease; z-index: 140; border-left: 1px solid rgba(255,255,255,0.1); }
+        .mobile-menu a { color: var(--white); text-decoration: none; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+        .mobile-menu a.active { color: var(--gold); }
+        .mobile-menu.open { right: 0; }
+        .overlay-bg { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 130; }
+
         /* --- PAGE HERO --- */
-        .page-hero { height: 50vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 80px; background: linear-gradient(to bottom, #1a161d, var(--dark)); }
+        .page-hero { height: 40vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 80px; background: linear-gradient(to bottom, #1a161d, var(--dark)); }
         .page-hero h1 { font-family: 'Playfair Display'; font-size: 3.5rem; color: var(--gold); opacity: 0; animation: fadeInUp 1s ease forwards; }
         .page-hero p { color: var(--gray); margin-top: 10px; opacity: 0; animation: fadeInUp 1s ease 0.3s forwards; }
 
         /* --- CONTENT SPECIFIC --- */
-        .about-section { padding: 80px 8%; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .about-section { padding: 80px 5%; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; max-width: 1200px; margin: 0 auto; }
         .about-img img { width: 100%; border-radius: 10px; opacity: 0; transform: translateX(-50px); animation: fadeInRight 1s ease 0.5s forwards; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .about-text { opacity: 0; animation: fadeInUp 1s ease 0.8s forwards; }
         .about-text h2 { font-family: 'Playfair Display'; font-size: 2.5rem; margin-bottom: 20px; }
         .about-text p { color: var(--gray); margin-bottom: 15px; line-height: 1.8; }
 
         /* --- FOOTER & ANIMATIONS --- */
-        footer { background: #0a080c; padding: 30px 8%; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px; }
+        footer { background: #0a080c; padding: 30px 5%; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px; }
         footer p { color: #555; font-size: 0.8rem; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeInRight { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
 
-        @media (max-width: 768px) { .about-section { grid-template-columns: 1fr; } }
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 768px) {
+            header { padding: 15px 4%; }
+            .logo { font-size: 1.5rem; }
+            .nav-links { display: none; } /* Sembunyikan menu desktop */
+            .hamburger { display: block; } /* Tampilkan hamburger */
+            .mobile-menu { display: flex; } /* Aktifkan struktur mobile menu */
+
+            .page-hero { height: 35vh; padding-top: 60px; }
+            .page-hero h1 { font-size: 2.5rem; }
+            
+            .about-section { grid-template-columns: 1fr; padding: 50px 4%; gap: 40px; }
+            .about-text h2 { font-size: 2rem; }
+            .about-img { order: 1; } /* Gambar di atas */
+            .about-text { order: 2; } /* Teks di bawah */
+        }
     </style>
 </head>
 <body>
@@ -49,15 +76,33 @@
     <!-- HEADER -->
     <header>
         <a href="index.html" class="logo">1 <span>Core</span></a>
+        
+        <!-- Nav Desktop -->
         <nav class="nav-links">
-            <!-- Menu Diperbarui ke Bahasa Indonesia + Menu Beranda -->
             <a href="index.html">Beranda</a>
             <a href="about.html" class="active">Tentang</a>
             <a href="services.html">Layanan</a>
             <a href="portfolio.html">Portofolio</a>
+            <a href="gallery.html">Galeri</a>
             <a href="contact.html" class="btn-nav">Hubungi Kami</a>
         </nav>
+
+        <!-- Hamburger Icon -->
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fas fa-bars" id="menuIcon"></i>
+        </div>
     </header>
+
+    <!-- Mobile Menu Sidebar -->
+    <div class="overlay-bg" id="overlayBg" onclick="toggleMenu()"></div>
+    <nav class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Beranda</a>
+        <a href="about.html" class="active">Tentang</a>
+        <a href="services.html">Layanan</a>
+        <a href="portfolio.html">Portofolio</a>
+        <a href="gallery.html">Galeri</a>
+        <a href="contact.html" style="margin-top: 20px; background: var(--gold); color: #000; text-align: center; border-radius: 30px; padding: 15px; border: none;">Hubungi Kami</a>
+    </nav>
 
     <!-- HERO PAGE -->
     <section class="page-hero">
@@ -84,5 +129,24 @@
     </section>
 
     <footer><p>&copy; 2024 1 Core Interior Design Studio.</p></footer>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const overlay = document.getElementById('overlayBg');
+            const icon = document.getElementById('menuIcon');
+            
+            menu.classList.toggle('open');
+            overlay.style.display = menu.classList.contains('open') ? 'block' : 'none';
+            
+            if (menu.classList.contains('open')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+    </script>
 </body>
 </html>
