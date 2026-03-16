@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Kami - 1 Core</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- GLOBAL STYLES --- */
+        :root { --gold: #c5a059; --dark: #0f0c15; --card: #161216; --gray: #a0a0a0; --white: #ffffff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: var(--dark); color: var(--white); }
+
+        /* HEADER */
+        header { position: fixed; top: 0; width: 100%; z-index: 100; padding: 20px 8%; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 12, 21, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .logo { font-family: 'Playfair Display'; font-size: 1.8rem; color: var(--white); } .logo span { color: var(--gold); }
+        .nav-links { display: flex; gap: 35px; align-items: center; }
+        .nav-links a { color: var(--gray); font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+        .btn-nav { padding: 10px 25px; background: var(--gold); color: #000; border-radius: 30px; font-weight: 600; }
+
+        /* PAGE HERO */
+        .page-hero { height: 40vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 80px; background: linear-gradient(to bottom, #1a161d, var(--dark)); }
+        .page-hero h1 { font-family: 'Playfair Display'; font-size: 3.5rem; color: var(--gold); }
+        .page-hero p { color: var(--gray); margin-top: 10px; }
+
+        /* PARTNERS SECTION */
+        .partners-section { padding: 80px 8%; min-height: 50vh; }
+        .partners-intro { max-width: 800px; margin: 0 auto 60px; text-align: center; color: var(--gray); }
+
+        /* PARTNERS GRID */
+        .partners-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; align-items: center; justify-items: center; max-width: 1200px; margin: 0 auto; }
+
+        /* PARTNER CARD */
+        .partner-card { 
+            width: 100%; height: 150px; 
+            background: var(--card); 
+            border-radius: 10px; 
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex; align-items: center; justify-content: center; 
+            padding: 20px;
+            transition: 0.4s; cursor: pointer;
+            opacity: 0; transform: scale(0.9);
+        }
+        .partner-card.loaded { opacity: 1; transform: scale(1); }
+        .partner-card:hover { 
+            background: transparent; border-color: var(--gold); transform: translateY(-5px); 
+            box-shadow: 0 10px 30px rgba(197, 160, 89, 0.1);
+        }
+
+        .partner-card img { 
+            max-width: 80%; max-height: 60px; 
+            filter: grayscale(100%) brightness(150%); opacity: 0.6; 
+            transition: 0.4s; 
+        }
+        .partner-card:hover img { filter: none; opacity: 1; }
+
+        /* Fallback Text jika gambar error */
+        .partner-name-text {
+            font-family: 'Playfair Display';
+            font-size: 1.2rem;
+            color: var(--gray);
+            transition: 0.3s;
+        }
+        .partner-card:hover .partner-name-text { color: var(--gold); }
+
+        /* FOOTER */
+        footer { background: #0a080c; padding: 30px 8%; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
+        footer p { color: #555; font-size: 0.8rem; }
+        
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <a href="index.html" class="logo">1 <span>Core</span></a>
+        <nav class="nav-links">
+            <a href="about.html">Tentang</a>
+            <a href="services.html">Layanan</a>
+            <a href="gallery.html">Galeri</a>
+            <a href="partners.html" class="active">Partner</a>
+            <a href="contact.html" class="btn-nav">Hubungi Kami</a>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="page-hero">
+        <div>
+            <h1>Partner Terpercaya</h1>
+            <p>Kolaborasi dengan brand-brand terkemuka.</p>
+        </div>
+    </section>
+
+    <!-- PARTNERS SECTION -->
+    <section class="partners-section">
+        <div class="partners-intro">
+            <p>Kami bangga membangun hubungan strategis dengan developer, arsitek, dan brand furnitur terbaik untuk memberikan hasil sempurna.</p>
+        </div>
+
+        <div class="partners-grid" id="partnersContainer">
+            <!-- Content akan dimuat di sini -->
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer><p>&copy; 2024 1 Core Interior Design Studio.</p></footer>
+
+    <!-- SUPABASE SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // 1. KONFIGURASI SUPABASE
+        const SUPABASE_URL = 'https://dikapquhusbwjccbqcsb.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpa2FwcXVodXNid2pjY2JxY3NiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxNjQ1NTQsImV4cCI6MjA4NDc0MDU1NH0.X278oHDF0be7oa25484eliSukSYAYvDbJyU6ysz83zA'; 
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // 2. FUNGSI LOAD PARTNERS
+        async function loadPartners() {
+            const container = document.getElementById('partnersContainer');
+            
+            try {
+                // Ambil data
+                let { data, error } = await sb.from('1_core_partners').select('*').order('id');
+
+                // Jika error (misal policy belum diset), tampilkan fallback
+                if (error) throw error;
+
+                // Jika data kosong
+                if (data.length === 0) {
+                    container.innerHTML = '<p style="color: var(--gray); text-align:center; grid-column: 1/-1;">Data partner belum tersedia.</p>';
+                    return;
+                }
+
+                // Render Data
+                container.innerHTML = '';
+                data.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'partner-card';
+                    
+                    // Logika: Jika ada gambar tampilkan img, jika tidak tampilkan teks
+                    let content = '';
+                    if (item.logo_url) {
+                        // onerror: jika gambar gagal load, ganti dengan teks nama
+                        content = `<img src="${item.logo_url}" alt="${item.name}" title="${item.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                   <span class="partner-name-text" style="display:none;">${item.name}</span>`;
+                    } else {
+                        content = `<span class="partner-name-text">${item.name}</span>`;
+                    }
+
+                    div.innerHTML = content;
+                    
+                    // Animasi entrance
+                    setTimeout(() => {
+                        div.classList.add('loaded');
+                    }, 100 * index);
+
+                    container.appendChild(div);
+                });
+
+            } catch (err) {
+                console.error('Error Detail:', err.message);
+                // Fallback Statis jika Supabase Error
+                container.innerHTML = `
+                    <div class="partner-card loaded"><span class="partner-name-text">Partner 1</span></div>
+                    <div class="partner-card loaded"><span class="partner-name-text">Partner 2</span></div>
+                    <div class="partner-card loaded"><span class="partner-name-text">Partner 3</span></div>
+                    <div class="partner-card loaded"><span class="partner-name-text">Partner 4</span></div>
+                `;
+            }
+        }
+
+        window.onload = loadPartners;
+    </script>
+</body>
+</html>
