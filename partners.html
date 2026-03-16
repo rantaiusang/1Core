@@ -31,16 +31,16 @@
         .partners-intro { max-width: 800px; margin: 0 auto 60px; text-align: center; color: var(--gray); }
 
         /* PARTNERS GRID */
-        .partners-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; align-items: center; justify-items: center; max-width: 1200px; margin: 0 auto; }
+        .partners-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; align-items: center; justify-items: center; max-width: 1200px; margin: 0 auto; }
 
         /* PARTNER CARD */
         .partner-card { 
-            width: 100%; height: 150px; 
+            width: 100%; height: 180px; /* Tinggi kartu ditinggikan */
             background: var(--card); 
             border-radius: 10px; 
             border: 1px solid rgba(255,255,255,0.05);
             display: flex; align-items: center; justify-content: center; 
-            padding: 20px;
+            padding: 30px; /* Padding diperbesar */
             transition: 0.4s; cursor: pointer;
             opacity: 0; transform: scale(0.9);
         }
@@ -51,8 +51,11 @@
         }
 
         .partner-card img { 
-            max-width: 80%; max-height: 60px; 
-            filter: grayscale(100%) brightness(150%); opacity: 0.6; 
+            /* UKURAN LOGO DIPERBESAR */
+            max-width: 90%;  /* Lebar maksimal hampir menyentuh pinggiran */
+            max-height: 80px; /* Tinggi diperbesar dari 60px menjadi 80px */
+            object-fit: contain;
+            filter: grayscale(100%) brightness(150%); opacity: 0.7; 
             transition: 0.4s; 
         }
         .partner-card:hover img { filter: none; opacity: 1; }
@@ -60,17 +63,16 @@
         /* Fallback Text jika gambar error */
         .partner-name-text {
             font-family: 'Playfair Display';
-            font-size: 1.2rem;
+            font-size: 1.4rem; /* Ukuran teks fallback diperbesar */
             color: var(--gray);
             transition: 0.3s;
+            text-align: center;
         }
         .partner-card:hover .partner-name-text { color: var(--gold); }
 
         /* FOOTER */
         footer { background: #0a080c; padding: 30px 8%; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
         footer p { color: #555; font-size: 0.8rem; }
-        
-        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
     </style>
 </head>
 <body>
@@ -79,6 +81,8 @@
     <header>
         <a href="index.html" class="logo">1 <span>Core</span></a>
         <nav class="nav-links">
+            <!-- MENU BARU: BERANDA DITAMBAHKAN DI AWAL -->
+            <a href="index.html">Beranda</a>
             <a href="about.html">Tentang</a>
             <a href="services.html">Layanan</a>
             <a href="gallery.html">Galeri</a>
