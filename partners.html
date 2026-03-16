@@ -15,9 +15,9 @@
 
         /* HEADER */
         header { position: fixed; top: 0; width: 100%; z-index: 100; padding: 20px 8%; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 12, 21, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .logo { font-family: 'Playfair Display'; font-size: 1.8rem; color: var(--white); } .logo span { color: var(--gold); }
+        .logo { font-family: 'Playfair Display'; font-size: 1.8rem; color: var(--white); text-decoration: none; } .logo span { color: var(--gold); }
         .nav-links { display: flex; gap: 35px; align-items: center; }
-        .nav-links a { color: var(--gray); font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; }
+        .nav-links a { color: var(--gray); font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; text-decoration: none; }
         .nav-links a:hover, .nav-links a.active { color: var(--gold); }
         .btn-nav { padding: 10px 25px; background: var(--gold); color: #000; border-radius: 30px; font-weight: 600; }
 
@@ -31,16 +31,16 @@
         .partners-intro { max-width: 800px; margin: 0 auto 60px; text-align: center; color: var(--gray); }
 
         /* PARTNERS GRID */
-        .partners-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; align-items: center; justify-items: center; max-width: 1200px; margin: 0 auto; }
+        .partners-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; align-items: center; justify-items: center; max-width: 1200px; margin: 0 auto; }
 
         /* PARTNER CARD */
         .partner-card { 
-            width: 100%; height: 180px; /* Tinggi kartu ditinggikan */
+            width: 100%; height: 180px; 
             background: var(--card); 
             border-radius: 10px; 
             border: 1px solid rgba(255,255,255,0.05);
             display: flex; align-items: center; justify-content: center; 
-            padding: 30px; /* Padding diperbesar */
+            padding: 20px;
             transition: 0.4s; cursor: pointer;
             opacity: 0; transform: scale(0.9);
         }
@@ -50,20 +50,26 @@
             box-shadow: 0 10px 30px rgba(197, 160, 89, 0.1);
         }
 
+        /* PERBAIKAN LOGO: Seragam & Profesional */
         .partner-card img { 
-            /* UKURAN LOGO DIPERBESAR */
-            max-width: 90%;  /* Lebar maksimal hampir menyentuh pinggiran */
-            max-height: 80px; /* Tinggi diperbesar dari 60px menjadi 80px */
-            object-fit: contain;
-            filter: grayscale(100%) brightness(150%); opacity: 0.7; 
+            width: 70%;           /* Lebar konsisten */
+            height: 60px;         /* Tinggi konsisten */
+            object-fit: contain;  /* Menjaga rasio tanpa terdistorsi */
+            
+            /* Efek Seragam: Putih Abu-abu */
+            filter: grayscale(100%) brightness(150%); 
+            opacity: 0.8; 
             transition: 0.4s; 
         }
-        .partner-card:hover img { filter: none; opacity: 1; }
+        .partner-card:hover img { 
+            filter: none;         /* Kembali ke warna asli saat hover */
+            opacity: 1; 
+        }
 
-        /* Fallback Text jika gambar error */
+        /* Fallback Text */
         .partner-name-text {
             font-family: 'Playfair Display';
-            font-size: 1.4rem; /* Ukuran teks fallback diperbesar */
+            font-size: 1.2rem; 
             color: var(--gray);
             transition: 0.3s;
             text-align: center;
@@ -81,10 +87,10 @@
     <header>
         <a href="index.html" class="logo">1 <span>Core</span></a>
         <nav class="nav-links">
-            <!-- MENU BARU: BERANDA DITAMBAHKAN DI AWAL -->
             <a href="index.html">Beranda</a>
             <a href="about.html">Tentang</a>
             <a href="services.html">Layanan</a>
+            <a href="portfolio.html">Portofolio</a>
             <a href="gallery.html">Galeri</a>
             <a href="partners.html" class="active">Partner</a>
             <a href="contact.html" class="btn-nav">Hubungi Kami</a>
@@ -127,37 +133,32 @@
             const container = document.getElementById('partnersContainer');
             
             try {
-                // Ambil data
                 let { data, error } = await sb.from('1_core_partners').select('*').order('id');
 
-                // Jika error (misal policy belum diset), tampilkan fallback
                 if (error) throw error;
 
-                // Jika data kosong
                 if (data.length === 0) {
                     container.innerHTML = '<p style="color: var(--gray); text-align:center; grid-column: 1/-1;">Data partner belum tersedia.</p>';
                     return;
                 }
 
-                // Render Data
                 container.innerHTML = '';
                 data.forEach((item, index) => {
                     const div = document.createElement('div');
                     div.className = 'partner-card';
                     
-                    // Logika: Jika ada gambar tampilkan img, jika tidak tampilkan teks
                     let content = '';
                     if (item.logo_url) {
-                        // onerror: jika gambar gagal load, ganti dengan teks nama
+                        // Tampilkan gambar logo
                         content = `<img src="${item.logo_url}" alt="${item.name}" title="${item.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                                    <span class="partner-name-text" style="display:none;">${item.name}</span>`;
                     } else {
+                        // Fallback teks jika tidak ada logo
                         content = `<span class="partner-name-text">${item.name}</span>`;
                     }
 
                     div.innerHTML = content;
                     
-                    // Animasi entrance
                     setTimeout(() => {
                         div.classList.add('loaded');
                     }, 100 * index);
@@ -167,7 +168,6 @@
 
             } catch (err) {
                 console.error('Error Detail:', err.message);
-                // Fallback Statis jika Supabase Error
                 container.innerHTML = `
                     <div class="partner-card loaded"><span class="partner-name-text">Partner 1</span></div>
                     <div class="partner-card loaded"><span class="partner-name-text">Partner 2</span></div>
