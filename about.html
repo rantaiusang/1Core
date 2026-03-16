@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - 1 Core</title>
-    <!-- Fonts & Icons sama seperti index -->
+    <title>Tentang Kami - 1 Core</title>
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* COPY PASTE BAGIAN :root, *, body, header, footer, animations DARI INDEX.HTML KE SINI AGA SERAGAM */
+        /* --- VARIABLES & RESET --- */
         :root { --gold: #c5a059; --dark: #0f0c15; --card: #161216; --gray: #a0a0a0; --white: #ffffff; }
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
         body { font-family: 'Poppins', sans-serif; background: var(--dark); color: var(--white); overflow-x: hidden; }
         a { text-decoration: none; color: inherit; }
 
-        /* HEADER STYLES (Sama persis) */
+        /* --- HEADER --- */
         header { position: fixed; top: 0; width: 100%; z-index: 100; padding: 20px 8%; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 12, 21, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .logo { font-family: 'Playfair Display'; font-size: 1.8rem; color: var(--white); } .logo span { color: var(--gold); }
         .nav-links { display: flex; gap: 35px; align-items: center; }
@@ -23,19 +23,19 @@
         .nav-links a:hover, .nav-links a.active { color: var(--gold); }
         .btn-nav { padding: 10px 25px; background: var(--gold); color: #000; border-radius: 30px; font-weight: 600; }
 
-        /* PAGE HERO (Untuk halaman dalam) */
+        /* --- PAGE HERO --- */
         .page-hero { height: 50vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 80px; background: linear-gradient(to bottom, #1a161d, var(--dark)); }
         .page-hero h1 { font-family: 'Playfair Display'; font-size: 3.5rem; color: var(--gold); opacity: 0; animation: fadeInUp 1s ease forwards; }
         .page-hero p { color: var(--gray); margin-top: 10px; opacity: 0; animation: fadeInUp 1s ease 0.3s forwards; }
 
-        /* CONTENT SPECIFIC */
+        /* --- CONTENT SPECIFIC --- */
         .about-section { padding: 80px 8%; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; max-width: 1200px; margin: 0 auto; }
         .about-img img { width: 100%; border-radius: 10px; opacity: 0; transform: translateX(-50px); animation: fadeInRight 1s ease 0.5s forwards; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .about-text { opacity: 0; animation: fadeInUp 1s ease 0.8s forwards; }
         .about-text h2 { font-family: 'Playfair Display'; font-size: 2.5rem; margin-bottom: 20px; }
         .about-text p { color: var(--gray); margin-bottom: 15px; line-height: 1.8; }
 
-        /* FOOTER & ANIMATIONS */
+        /* --- FOOTER & ANIMATIONS --- */
         footer { background: #0a080c; padding: 30px 8%; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px; }
         footer p { color: #555; font-size: 0.8rem; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -46,21 +46,23 @@
 </head>
 <body>
 
-    <!-- HEADER (Tandai link About dengan class active) -->
+    <!-- HEADER -->
     <header>
         <a href="index.html" class="logo">1 <span>Core</span></a>
         <nav class="nav-links">
-            <a href="about.html" class="active">About</a>
-            <a href="services.html">Services</a>
-            <a href="portfolio.html">Portfolio</a>
-            <a href="contact.html" class="btn-nav">Contact</a>
+            <!-- Menu Diperbarui ke Bahasa Indonesia + Menu Beranda -->
+            <a href="index.html">Beranda</a>
+            <a href="about.html" class="active">Tentang</a>
+            <a href="services.html">Layanan</a>
+            <a href="portfolio.html">Portofolio</a>
+            <a href="contact.html" class="btn-nav">Hubungi Kami</a>
         </nav>
     </header>
 
     <!-- HERO PAGE -->
     <section class="page-hero">
         <div>
-            <h1>About Us</h1>
+            <h1>Tentang Kami</h1>
             <p>Cerita di balik 1 Core Interior</p>
         </div>
     </section>
@@ -68,12 +70,12 @@
     <!-- CONTENT -->
     <section class="about-section">
         <div class="about-img">
-            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=800" alt="Interior Team">
+            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=800" alt="Tim Interior">
         </div>
         <div class="about-text">
-            <h2>Defining <span style="color:var(--gold)">Spaces</span></h2>
+            <h2>Mendefinisikan <span style="color:var(--gold)">Ruang</span></h2>
             <p>Didirikan pada 2015, 1 Core lahir dari keyakinan bahwa setiap ruang memiliki "inti" cerita. Kami bukan sekadar desainer, kami adalah penerjemah visi Anda menjadi realitas fisik yang hidup.</p>
-            <p>Dengan tim yang berpengalaman di Jakarta dan Bali, kami telah menyelesaikan lebih dari 150 proyek residensial dan komersial yang mengedepankan fungsi dan keindahan abadi.</p>
+            <p>Dengan tim yang berpengalaman, kami telah menyelesaikan lebih dari 150 proyek residensial dan komersial yang mengedepankan fungsi dan keindahan abadi.</p>
             <div style="margin-top: 30px; padding: 20px; background: var(--card); border-left: 3px solid var(--gold);">
                 <h3 style="color: var(--gold); margin-bottom: 10px;">Visi Kami</h3>
                 <p style="font-size: 0.9rem; color: #ccc;">Menjadi studio desain interior terdepan yang menciptakan ruang berkelas global dengan sentuhan lokal yang autentik.</p>
