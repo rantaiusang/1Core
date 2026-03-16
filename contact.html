@@ -13,9 +13,9 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background: var(--dark); color: var(--white); }
         header { position: fixed; top: 0; width: 100%; z-index: 100; padding: 20px 8%; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 12, 21, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .logo { font-family: 'Playfair Display'; font-size: 1.8rem; color: var(--white); } .logo span { color: var(--gold); }
+        .logo { font-family: 'Playfair Display'; font-size: 1.8rem; color: var(--white); text-decoration: none; } .logo span { color: var(--gold); }
         .nav-links { display: flex; gap: 35px; align-items: center; }
-        .nav-links a { color: var(--gray); font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; }
+        .nav-links a { color: var(--gray); font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; text-decoration: none; }
         .nav-links a:hover, .nav-links a.active { color: var(--gold); }
         .btn-nav { padding: 10px 25px; background: var(--gold); color: #000; border-radius: 30px; font-weight: 600; }
 
@@ -38,10 +38,15 @@
             color: #fff; border-radius: 5px; font-family: 'Poppins'; transition: 0.3s;
         }
         .contact-form input:focus, .contact-form textarea:focus { border-color: var(--gold); outline: none; }
-        .contact-form button { background: var(--gold); color: #000; padding: 15px 40px; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s; width: 100%; }
+        .contact-form button { background: var(--gold); color: #000; padding: 15px 40px; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s; width: 100%; font-size: 1rem; }
         .contact-form button:hover { background: #fff; }
+        
+        /* STATUS MESSAGE */
+        #status_msg { text-align: center; margin-bottom: 20px; padding: 10px; border-radius: 5px; display: none; }
+        .success { background: rgba(0, 128, 0, 0.2); color: #00ff00; border: 1px solid #00ff00; }
+        .error { background: rgba(255, 0, 0, 0.2); color: #ff4444; border: 1px solid #ff4444; }
 
-        footer { background: #0a080c; padding: 30px 8%; text-align: center; margin-top: 50px; }
+        footer { background: #0a080c; padding: 30px 8%; text-align: center; margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.05); }
         footer p { color: #555; font-size: 0.8rem; }
 
         @media (max-width: 768px) { .contact-container { grid-template-columns: 1fr; } }
@@ -53,11 +58,11 @@
     <header>
         <a href="index.html" class="logo">1 <span>Core</span></a>
         <nav class="nav-links">
-            <!-- MENU DIPERBARUI: Tambahan Beranda -->
             <a href="index.html">Beranda</a>
             <a href="about.html">Tentang</a>
             <a href="services.html">Layanan</a>
             <a href="portfolio.html">Portofolio</a>
+            <a href="gallery.html">Galeri</a>
             <a href="contact.html" class="btn-nav active">Hubungi Kami</a>
         </nav>
     </header>
@@ -65,7 +70,7 @@
     <!-- CONTENT -->
     <div class="contact-container">
         <div class="contact-info">
-            <h2>Mari <span style="color:var(--gold)">Bicara</span></h2>
+            <h2>Hubungi <span style="color:var(--gold)">Kami</span></h2>
             <p>Punya proyek baru? Hubungi kami untuk konsultasi desain impian Anda.</p>
             
             <!-- Alamat -->
@@ -111,16 +116,76 @@
         </div>
 
         <div class="contact-form">
-            <form action="#" method="POST">
-                <input type="text" name="name" placeholder="Nama Lengkap Anda" required>
-                <input type="email" name="email" placeholder="Alamat Email Anda" required>
-                <input type="text" name="subject" placeholder="Subjek (cth: Desain Rumah)">
-                <textarea rows="5" name="message" placeholder="Ceritakan kebutuhan desain Anda..." required></textarea>
-                <button type="submit">Kirim Pesan</button>
+            <!-- Pesan Status -->
+            <div id="status_msg"></div>
+
+            <form id="contactForm">
+                <input type="text" name="name" id="name" placeholder="Nama Lengkap Anda" required>
+                <input type="email" name="email" id="email" placeholder="Alamat Email Anda" required>
+                <input type="text" name="subject" id="subject" placeholder="Subjek (cth: Desain Rumah)">
+                <textarea rows="5" name="message" id="message" placeholder="Ceritakan kebutuhan desain Anda..." required></textarea>
+                <button type="submit" id="submitBtn">Kirim Pesan</button>
             </form>
         </div>
     </div>
 
     <footer><p>&copy; 2024 1 Core Interior Design Studio.</p></footer>
+
+    <!-- EMAILJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <script>
+        // 1. INISIALISASI EMAILJS
+        // Ganti 'YOUR_PUBLIC_KEY' dengan Public Key dari akun EmailJS Anda
+        (function(){
+            emailjs.init("YOUR_PUBLIC_KEY"); 
+        })();
+
+        // 2. HANDLE FORM SUBMIT
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Mencegah reload halaman
+
+            const btn = document.getElementById('submitBtn');
+            const statusMsg = document.getElementById('status_msg');
+
+            // Tampilkan loading
+            btn.value = 'Mengirim...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+
+            // Parameter yang akan dikirim ke template email
+            const templateParams = {
+                from_name: document.getElementById('name').value,
+                from_email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+
+            // Kirim Email
+            // Ganti 'YOUR_SERVICE_ID' dan 'YOUR_TEMPLATE_ID' dengan ID dari EmailJS
+            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+                .then(function() {
+                    // Sukses
+                    statusMsg.style.display = 'block';
+                    statusMsg.className = 'success';
+                    statusMsg.innerText = 'Pesan berhasil terkirim! Kami akan segera menghubungi Anda.';
+                    
+                    // Reset form
+                    document.getElementById('contactForm').reset();
+                    btn.innerText = 'Kirim Pesan';
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                }, function(error) {
+                    // Gagal
+                    statusMsg.style.display = 'block';
+                    statusMsg.className = 'error';
+                    statusMsg.innerText = 'Gagal mengirim pesan. Silakan coba lagi atau hubungi via WhatsApp.';
+                    console.log('FAILED...', error);
+                    btn.innerText = 'Kirim Pesan';
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                });
+        });
+    </script>
 </body>
 </html>
