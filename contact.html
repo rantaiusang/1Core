@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kontak - 1 Core</title>
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -26,7 +27,7 @@
         .nav-links a:hover, .nav-links a.active { color: var(--gold); }
         .btn-nav { padding: 10px 25px; background: var(--gold); color: #000; border-radius: 30px; font-weight: 600; }
 
-        /* NAV MOBILE */
+        /* NAV MOBILE (HAMBURGER) - Sesuai Contoh */
         .hamburger { display: none; font-size: 1.5rem; color: var(--white); cursor: pointer; z-index: 150; }
         .mobile-menu { display: none; position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: #0a080c; flex-direction: column; padding: 80px 30px 30px; gap: 25px; transition: 0.4s ease; z-index: 140; border-left: 1px solid rgba(255,255,255,0.1); }
         .mobile-menu a { color: var(--white); text-decoration: none; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
@@ -41,74 +42,59 @@
 
         /* --- CONTACT LAYOUT --- */
         .contact-section { padding: 80px 5%; max-width: 1200px; margin: 0 auto; }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 50px; align-items: start; opacity: 0; animation: fadeInUp 1s ease 0.5s forwards; }
         
-        /* Layout 2 Kolom Desktop */
-        .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: start; opacity: 0; animation: fadeInUp 1s ease 0.5s forwards; }
-        
-        /* Info Box Styling */
-        .info-card { background: var(--card); padding: 30px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 25px; transition: transform 0.3s; }
-        .info-card:hover { transform: translateY(-5px); border-color: rgba(197, 160, 89, 0.3); }
-        
-        .info-card h3 { font-family: 'Playfair Display'; font-size: 1.5rem; margin-bottom: 20px; color: var(--white); border-left: 3px solid var(--gold); padding-left: 15px; }
-        
-        .info-item { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px; }
+        /* Info Cards */
+        .info-card { background: var(--card); padding: 25px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; transition: 0.3s; }
+        .info-card:hover { border-color: rgba(197, 160, 89, 0.3); transform: translateY(-3px); }
+        .info-item { display: flex; gap: 15px; margin-bottom: 15px; }
         .info-item:last-child { margin-bottom: 0; }
-        .info-item i { color: var(--gold); font-size: 1.1rem; margin-top: 3px; width: 20px; text-align: center; }
-        .info-item div h4 { font-size: 0.85rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: 400; }
-        .info-item div p, .info-item div a { color: #ccc; font-size: 0.95rem; line-height: 1.5; transition: 0.3s; }
-        .info-item div a:hover { color: var(--gold); }
+        .info-item i { color: var(--gold); font-size: 1.2rem; margin-top: 2px; }
+        .info-item h4 { font-size: 0.8rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .info-item p, .info-item a { color: #ccc; font-size: 0.95rem; transition: 0.3s; }
+        .info-item a:hover { color: var(--gold); }
 
         /* Form Styling */
-        .contact-form-box { background: var(--card); padding: 40px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
-        .contact-form-box h2 { font-family: 'Playfair Display'; font-size: 1.8rem; margin-bottom: 25px; }
+        .contact-form-box { background: var(--card); padding: 40px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .contact-form-box h2 { font-family: 'Playfair Display'; font-size: 2rem; margin-bottom: 25px; }
         
-        .input-group { margin-bottom: 20px; position: relative; }
+        .input-group { margin-bottom: 20px; }
         .input-group input, .input-group textarea {
-            width: 100%; padding: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
-            color: #fff; border-radius: 5px; font-family: 'Poppins'; transition: 0.3s; font-size: 0.95rem;
+            width: 100%; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; border-radius: 5px; font-family: 'Poppins'; font-size: 0.95rem; transition: 0.3s;
         }
-        .input-group input:focus, .input-group textarea:focus { border-color: var(--gold); background: rgba(0,0,0,0.3); outline: none; box-shadow: 0 0 10px rgba(197, 160, 89, 0.1); }
-        .input-group textarea { resize: vertical; min-height: 120px; }
+        .input-group input:focus, .input-group textarea:focus { border-color: var(--gold); outline: none; background: rgba(0,0,0,0.2); }
+        .input-group textarea { min-height: 120px; resize: vertical; }
+        
+        .btn-submit { width: 100%; padding: 14px; background: var(--gold); color: #000; border: none; border-radius: 30px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-submit:hover { background: #fff; }
+        .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        .btn-submit { background: var(--gold); color: #000; padding: 15px 40px; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; transition: 0.3s; width: 100%; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-submit:hover { background: #fff; box-shadow: 0 5px 20px rgba(197, 160, 89, 0.3); }
-        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+        /* Status Message */
+        #status_msg { margin-bottom: 20px; padding: 12px; border-radius: 5px; font-size: 0.9rem; display: none; text-align: center; }
+        .success { background: rgba(39, 174, 96, 0.15); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.3); }
+        .error { background: rgba(231, 76, 60, 0.15); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.3); }
 
-        /* Status Msg */
-        #status_msg { text-align: center; margin-bottom: 20px; padding: 12px; border-radius: 5px; display: none; font-size: 0.9rem; }
-        .success { background: rgba(0, 128, 0, 0.15); color: #4caf50; border: 1px solid rgba(76, 175, 80, 0.3); }
-        .error { background: rgba(255, 0, 0, 0.1); color: #f44336; border: 1px solid rgba(244, 67, 54, 0.3); }
-
-        /* FOOTER */
+        /* --- FOOTER & ANIMATIONS --- */
         footer { background: #0a080c; padding: 30px 5%; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px; }
         footer p { color: #555; font-size: 0.8rem; }
-
-        /* ANIMATIONS */
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- RESPONSIVE MOBILE --- */
         @media (max-width: 768px) {
             header { padding: 15px 4%; }
             .logo { font-size: 1.5rem; }
-            .nav-links { display: none; }
-            .hamburger { display: block; }
-            .mobile-menu { display: flex; }
+            .nav-links { display: none; } /* Sembunyikan menu desktop */
+            .hamburger { display: block; } /* Tampilkan hamburger */
+            .mobile-menu { display: flex; } /* Aktifkan struktur mobile menu */
 
             .page-hero { height: 30vh; padding-top: 60px; }
             .page-hero h1 { font-size: 2.5rem; }
             
-            .contact-grid { grid-template-columns: 1fr; gap: 40px; }
-            .contact-form-box { padding: 25px; }
-            
-            /* Membuat info kontak menjadi grid 2 kolom di mobile agar tidak panjang sekali */
-            .info-grid-mobile { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-            .info-card { margin-bottom: 0; padding: 20px; } /* Reset margin bawah */
-            .info-card h3 { font-size: 1.2rem; margin-bottom: 15px; }
-            
-            /* Jika layar sangat kecil, kembali ke 1 kolom */
-            @media (max-width: 480px) {
-                .info-grid-mobile { grid-template-columns: 1fr; }
-            }
+            .contact-grid { grid-template-columns: 1fr; }
+            /* Form di atas, Info di bawah untuk prioritas aksi di mobile */
+            .contact-form-box { order: 1; padding: 25px; }
+            .contact-info { order: 2; margin-top: 20px; }
         }
     </style>
 </head>
@@ -117,6 +103,8 @@
     <!-- HEADER -->
     <header>
         <a href="index.html" class="logo">1 <span>Core</span></a>
+        
+        <!-- Nav Desktop -->
         <nav class="nav-links">
             <a href="index.html">Beranda</a>
             <a href="about.html">Tentang</a>
@@ -125,12 +113,14 @@
             <a href="gallery.html">Galeri</a>
             <a href="contact.html" class="btn-nav active">Hubungi Kami</a>
         </nav>
+
+        <!-- Hamburger Icon -->
         <div class="hamburger" onclick="toggleMenu()">
             <i class="fas fa-bars" id="menuIcon"></i>
         </div>
     </header>
 
-    <!-- Mobile Menu -->
+    <!-- Mobile Menu Sidebar (Sesuai Contoh) -->
     <div class="overlay-bg" id="overlayBg" onclick="toggleMenu()"></div>
     <nav class="mobile-menu" id="mobileMenu">
         <a href="index.html">Beranda</a>
@@ -138,14 +128,14 @@
         <a href="services.html">Layanan</a>
         <a href="portfolio.html">Portofolio</a>
         <a href="gallery.html">Galeri</a>
-        <a href="contact.html" class="active">Hubungi Kami</a>
+        <a href="contact.html" style="margin-top: 20px; background: var(--gold); color: #000; text-align: center; border-radius: 30px; padding: 15px; border: none;">Hubungi Kami</a>
     </nav>
 
     <!-- HERO PAGE -->
     <section class="page-hero">
         <div>
-            <h1>Hubungi Kami</h1>
-            <p>Let's create something amazing together.</p>
+            <h1>Kontak Kami</h1>
+            <p>Mari wujudkan ruang impian Anda</p>
         </div>
     </section>
 
@@ -155,57 +145,48 @@
             
             <!-- KIRI: INFO KONTAK -->
             <div class="contact-info">
-                <div class="info-grid-mobile">
-                    <!-- Card Alamat -->
-                    <div class="info-card">
-                        <h3>Studio</h3>
-                        <div class="info-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <div>
-                                <h4>Alamat</h4>
-                                <p>Dukuh Glodeg, Wagir Lor, Ngebel, Ponorogo</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card Kontak -->
-                    <div class="info-card">
-                        <h3>Kontak</h3>
-                        <div class="info-item">
-                            <i class="fas fa-envelope"></i>
-                            <div>
-                                <h4>Email</h4>
-                                <a href="mailto:hello@1core-design.id">hello@1core-design.id</a>
-                            </div>
+                <div class="info-card">
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Studio</h4>
+                            <p>Dukuh Glodeg, Wagir Lor, Ngebel, Ponorogo</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Card Team (Full Width) -->
                 <div class="info-card">
-                    <h3>Tim Kami</h3>
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <a href="mailto:hello@1core-design.id">hello@1core-design.id</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
                     <div class="info-item">
                         <i class="fab fa-whatsapp"></i>
                         <div>
                             <h4>Founder</h4>
-                            <a href="https://wa.me/628133039866?text=Halo%201%20Core" target="_blank">0813 3039 866</a>
+                            <a href="https://wa.me/628133039866" target="_blank">0813 3039 866</a>
                         </div>
                     </div>
-                    <div class="info-item">
+                    <div class="info-item" style="margin-top: 15px;">
                         <i class="fab fa-whatsapp"></i>
                         <div>
                             <h4>Co-Founder</h4>
-                            <a href="https://wa.me/628133138334?text=Halo%201%20Core" target="_blank">0813 3138 334</a>
+                            <a href="https://wa.me/628133138334" target="_blank">0813 3138 334</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Social Media -->
-                 <div style="margin-top: 20px;">
-                    <h4 style="color:var(--gray); font-weight:400; margin-bottom:15px; text-transform:uppercase; font-size:0.8rem;">Ikuti Kami</h4>
-                    <div style="display: flex; gap: 15px;">
-                        <a href="#" style="color: var(--white); font-size: 1.2rem; background:var(--card); width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1px solid rgba(255,255,255,0.1); transition:0.3s;"><i class="fab fa-instagram"></i></a>
-                        <a href="#" style="color: var(--white); font-size: 1.2rem; background:var(--card); width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1px solid rgba(255,255,255,0.1); transition:0.3s;"><i class="fab fa-linkedin"></i></a>
+                <div style="margin-top: 20px;">
+                     <h4 style="color:var(--gray); font-weight:400; margin-bottom:15px; font-size:0.9rem;">Ikuti Kami</h4>
+                     <div style="display: flex; gap: 15px;">
+                        <a href="#" style="color: var(--white); font-size: 1.2rem; transition:0.3s;"><i class="fab fa-instagram"></i></a>
+                        <a href="#" style="color: var(--white); font-size: 1.2rem; transition:0.3s;"><i class="fab fa-linkedin"></i></a>
                     </div>
                 </div>
             </div>
@@ -225,7 +206,7 @@
                         <input type="text" name="subject" id="subject" placeholder="Subjek (cth: Desain Rumah)">
                     </div>
                     <div class="input-group">
-                        <textarea id="message" placeholder="Ceritakan kebutuhan desain Anda..." required></textarea>
+                        <textarea name="message" id="message" placeholder="Ceritakan kebutuhan desain Anda..." required></textarea>
                     </div>
                     <button type="submit" class="btn-submit" id="submitBtn">Kirim Pesan</button>
                 </form>
@@ -240,7 +221,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
     <script>
-        // --- MOBILE MENU FUNCTION ---
+        // --- MOBILE MENU FUNCTION (Sesuai Contoh) ---
         function toggleMenu() {
             const menu = document.getElementById('mobileMenu');
             const overlay = document.getElementById('overlayBg');
@@ -249,13 +230,17 @@
             menu.classList.toggle('open');
             overlay.style.display = menu.classList.contains('open') ? 'block' : 'none';
             
-            // Ganti ikon
-            icon.classList.toggle('fa-bars');
-            icon.classList.toggle('fa-times');
+            if (menu.classList.contains('open')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
         }
 
         // --- EMAILJS CONFIG ---
-        // PENTING: Ganti "YOUR_PUBLIC_KEY" dengan Public Key dari dashboard EmailJS Anda
+        // Ganti "YOUR_PUBLIC_KEY" dengan Public Key asli Anda
         (function(){
             emailjs.init("YOUR_PUBLIC_KEY"); 
         })();
@@ -267,7 +252,6 @@
             const btn = document.getElementById('submitBtn');
             const statusMsg = document.getElementById('status_msg');
 
-            // UI Loading State
             btn.innerText = 'Mengirim...';
             btn.disabled = true;
 
@@ -278,10 +262,9 @@
                 message: document.getElementById('message').value
             };
 
-            // PENTING: Ganti 'YOUR_SERVICE_ID' dan 'YOUR_TEMPLATE_ID'
+            // Ganti 'YOUR_SERVICE_ID' dan 'YOUR_TEMPLATE_ID' dengan ID asli Anda
             emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
                 .then(function() {
-                    // Sukses
                     statusMsg.style.display = 'block';
                     statusMsg.className = 'success';
                     statusMsg.innerText = 'Pesan berhasil terkirim! Kami akan segera menghubungi Anda.';
@@ -290,10 +273,9 @@
                     btn.innerText = 'Kirim Pesan';
                     btn.disabled = false;
                 }, function(error) {
-                    // Gagal
                     statusMsg.style.display = 'block';
                     statusMsg.className = 'error';
-                    statusMsg.innerText = 'Gagal mengirim. Silakan coba lagi atau hubungi via WhatsApp.';
+                    statusMsg.innerText = 'Gagal mengirim pesan. Silakan coba lagi.';
                     console.log('FAILED...', error);
                     btn.innerText = 'Kirim Pesan';
                     btn.disabled = false;
