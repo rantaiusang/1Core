@@ -38,8 +38,6 @@
             letter-spacing: 1px; transition: 0.3s; position: relative; padding-bottom: 5px;
         }
         .nav-links a:hover, .nav-links a.active { color: var(--gold); }
-        
-        /* Garis bawah animasi saat hover */
         .nav-links a::after {
             content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px;
             background: var(--gold); transition: 0.3s;
@@ -52,50 +50,12 @@
         }
         .btn-nav:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(197,160,89,0.3); }
 
-        /* NAV MOBILE (HAMBURGER) - PERBAIKAN DI SINI */
-        .hamburger { 
-            display: none; /* Tersembunyi di desktop */ 
-            font-size: 1.5rem; color: var(--white); cursor: pointer; z-index: 150; 
-        }
+        /* --- NAV MOBILE SETUP (FIXED) --- */
+        .hamburger { display: none; font-size: 1.5rem; color: var(--white); cursor: pointer; z-index: 150; }
+        .overlay-bg { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 130; }
         
-        /* Aturan dasar Mobile Menu */
-        .mobile-menu { 
-            display: flex; /* Default flex agar layout kolom bekerja, tapi posisi di luar layar */
-            flex-direction: column;
-            position: fixed; 
-            top: 0; 
-            right: -100%; /* Posisi awal di luar layar kanan */
-            width: 280px; 
-            height: 100vh; 
-            background: #0a080c; 
-            padding: 80px 30px 30px; 
-            gap: 25px; 
-            transition: 0.4s ease; 
-            z-index: 140; 
-            border-left: 1px solid rgba(255,255,255,0.1); 
-        }
-        
-        /* Class saat menu dibuka */
-        .mobile-menu.open { 
-            right: 0; /* Geser ke dalam layar */
-        }
-
-        .mobile-menu a { 
-            color: var(--white); 
-            text-decoration: none; 
-            font-size: 1.1rem; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); 
-            padding-bottom: 15px; 
-        }
-        .mobile-menu a.active { color: var(--gold); }
-        
-        .overlay-bg { 
-            display: none; /* Default none, diatur via JS */
-            position: fixed; 
-            top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.8); 
-            z-index: 130; 
-        }
+        /* Mobile menu hidden by default */
+        .mobile-menu { display: none; }
 
         /* --- HERO SECTION --- */
         .hero {
@@ -134,18 +94,40 @@
         .preview-card.active { opacity: 1; transform: translateY(0); }
         .preview-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; filter: brightness(0.8); }
         .preview-card:hover img { transform: scale(1.1); filter: brightness(0.4); }
-        
-        /* Overlay khusus card */
-        .preview-card .card-overlay { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); 
-            opacity: 0; transition: 0.4s; 
-        }
+        .preview-card .card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); opacity: 0; transition: 0.4s; }
         .preview-card:hover .card-overlay { opacity: 1; }
-        
         .card-info { position: absolute; bottom: 30px; left: 30px; transform: translateY(20px); transition: 0.4s; opacity: 0; z-index: 2; }
         .preview-card:hover .card-info { transform: translateY(0); opacity: 1; }
         .card-info h3 { font-family: 'Playfair Display'; font-size: 1.5rem; margin-bottom: 5px; }
+
+        /* --- PARTNERS SECTION (DIGABUNG DARI PARTNERS.HTML) --- */
+        .partners-section { padding: 80px 5%; max-width: 1200px; margin: 0 auto; }
+        .partners-intro { text-align: center; color: var(--gray); margin-bottom: 50px; max-width: 800px; margin-left: auto; margin-right: auto; }
+
+        .partners-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; }
+
+        .partner-card { 
+            background: var(--card); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);
+            display: flex; align-items: center; justify-content: center; padding: 30px;
+            transition: 0.4s; cursor: pointer; min-height: 180px;
+            opacity: 0; transform: translateY(20px);
+        }
+        .partner-card.loaded { opacity: 1; transform: translateY(0); }
+        .partner-card:hover { 
+            background: transparent; border-color: var(--gold); transform: translateY(-5px); 
+            box-shadow: 0 10px 30px rgba(197, 160, 89, 0.1);
+        }
+
+        .partner-card img { 
+            width: 80%; max-width: 150px; height: auto; 
+            filter: grayscale(100%) brightness(150%); opacity: 0.7; transition: 0.4s; 
+        }
+        .partner-card:hover img { filter: none; opacity: 1; }
+
+        .partner-name-text {
+            font-family: 'Playfair Display'; font-size: 1.2rem; color: var(--gray); text-align: center;
+        }
+        .partner-card:hover .partner-name-text { color: var(--gold); }
 
         /* --- FOOTER --- */
         footer { background: #0a080c; padding: 30px 5%; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
@@ -158,12 +140,31 @@
 
         /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
+            /* Header adjustments */
             .nav-links { display: none; } /* Sembunyikan menu desktop */
             .hamburger { display: block; } /* Tampilkan hamburger */
-            
+
+            /* AKTIFKAN Mobile Menu di Mobile */
+            .mobile-menu {
+                display: flex; flex-direction: column;
+                position: fixed; top: 0; right: 0; width: 280px; height: 100vh;
+                background: #0a080c; padding: 80px 30px 30px; gap: 25px;
+                border-left: 1px solid rgba(255,255,255,0.1); z-index: 140;
+                transform: translateX(100%); /* Posisi awal di luar layar */
+                transition: transform 0.4s ease;
+            }
+            .mobile-menu.open { transform: translateX(0); }
+            .mobile-menu a { color: var(--white); font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+            .mobile-menu a.active { color: var(--gold); }
+
+            /* Hero & Content adjustments */
             .hero-title { font-size: 3rem; }
             .section-title h2 { font-size: 2.5rem; }
             .preview-card { height: 300px; }
+            
+            /* Partners adjustments */
+            .partners-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+            .partner-card { min-height: 150px; padding: 20px; }
         }
     </style>
 </head>
@@ -245,10 +246,28 @@
         </div>
     </section>
 
+    <!-- PARTNERS SECTION (TAMBAHAN DARI PARTNERS.HTML) -->
+    <section class="partners-section">
+        <div class="section-title">
+            <h2>Partner <span>Terpercaya</span></h2>
+            <div class="divider"></div>
+        </div>
+        <div class="partners-intro">
+            <p>Kami bangga membangun hubungan strategis dengan developer, arsitek, dan brand furnitur terbaik untuk memberikan hasil sempurna.</p>
+        </div>
+
+        <div class="partners-grid" id="partnersContainer">
+            <!-- Content akan dimuat via JS -->
+        </div>
+    </section>
+
     <!-- FOOTER -->
     <footer>
         <p>&copy; 2024 1 Core Interior Design Studio. Seluruh Hak Dilindungi.</p>
     </footer>
+
+    <!-- SUPABASE SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- SCRIPT -->
     <script>
@@ -268,7 +287,7 @@
             });
         };
         window.addEventListener('scroll', revealOnScroll);
-        revealOnScroll(); // Cek awal
+        revealOnScroll(); 
 
         // 3. Fungsi Toggle Menu Mobile
         function toggleMenu() {
@@ -277,16 +296,70 @@
             const icon = document.getElementById('menuIcon');
             
             menu.classList.toggle('open');
-            overlay.style.display = menu.classList.contains('open') ? 'block' : 'none';
             
             if (menu.classList.contains('open')) {
+                overlay.style.display = 'block';
                 icon.classList.remove('fa-bars');
                 icon.classList.add('fa-times');
             } else {
+                overlay.style.display = 'none';
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
             }
         }
+
+        // 4. LOAD PARTNERS (DARI PARTNERS.HTML)
+        const SUPABASE_URL = 'https://dikapquhusbwjccbqcsb.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpa2FwcXVodXNid2pjY2JxY3NiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxNjQ1NTQsImV4cCI6MjA4NDc0MDU1NH0.X278oHDF0be7oa25484eliSukSYAYvDbJyU6ysz83zA'; 
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function loadPartners() {
+            const container = document.getElementById('partnersContainer');
+            
+            try {
+                let { data, error } = await sb.from('1_core_partners').select('*').order('id');
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<p style="color: var(--gray); text-align:center; grid-column: 1/-1;">Data partner belum tersedia.</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                data.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'partner-card';
+                    
+                    if (item.logo_url) {
+                        div.innerHTML = `<img src="${item.logo_url}" alt="${item.name}" title="${item.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                         <span class="partner-name-text" style="display:none;">${item.name}</span>`;
+                    } else {
+                        div.innerHTML = `<span class="partner-name-text">${item.name}</span>`;
+                    }
+
+                    // Animasi muncul saat scroll (cek posisi)
+                    const checkSlide = () => {
+                        const rect = div.getBoundingClientRect();
+                        if (rect.top < window.innerHeight) {
+                            setTimeout(() => { div.classList.add('loaded'); }, 100 * index);
+                        }
+                    };
+                    window.addEventListener('scroll', checkSlide);
+                    checkSlide(); // Trigger awal
+
+                    container.appendChild(div);
+                });
+
+            } catch (err) {
+                console.error('Error Detail:', err.message);
+                container.innerHTML = `
+                    <div class="partner-card loaded"><span class="partner-name-text">Partner 1</span></div>
+                    <div class="partner-card loaded"><span class="partner-name-text">Partner 2</span></div>
+                `;
+            }
+        }
+
+        window.onload = loadPartners;
     </script>
 </body>
 </html>
